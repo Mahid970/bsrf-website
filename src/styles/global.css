@@ -1,0 +1,243 @@
+/* ==========================================================================
+   BSRF design tokens
+   Palette is drawn from the forum logo: ultramarine "B", navy bars, mint swoosh.
+   ========================================================================== */
+
+:root {
+  /* colour */
+  --ink: #0f0d45;          /* navy from the logo bars: headings, body text */
+  --ink-soft: #3b3e6b;     /* long-form reading text */
+  --muted: #565a80;        /* secondary text (5.9:1 on paper) */
+  --blue: #2316b8;         /* logo ultramarine: primary actions, chart bars */
+  --blue-deep: #1a0f93;
+  --blue-tint: #e8e7fb;
+  --green: #34c08a;        /* logo swoosh: growth line, ticker arrows (graphics only) */
+  --green-ink: #127a52;    /* green that passes contrast as text */
+  --paper: #f5f6fa;        /* cool page background */
+  --surface: #ffffff;
+  --line: #dadceb;         /* chart gridlines, hairlines */
+  --night: #0d0b3b;        /* dark bands */
+  --night-line: rgb(255 255 255 / 0.12);
+  --on-night: #eceeff;
+  --on-night-muted: #a9acd6;
+
+  /* type */
+  --font-ui: var(--font-display), system-ui, sans-serif;
+  --font-read: var(--font-serif), Georgia, serif;
+
+  /* modular scale (1.25) with fluid display sizes */
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.5625rem;
+  --step-3: clamp(1.75rem, 1.2rem + 1.6vw, 2.4rem);
+  --step-4: clamp(2.2rem, 1.4rem + 3vw, 3.6rem);
+  --step-5: clamp(2.7rem, 1.2rem + 5.6vw, 6.25rem);
+
+  /* layout */
+  --max: 1240px;
+  --gutter: clamp(1rem, 0.5rem + 2.4vw, 2.5rem);
+  --section: clamp(5rem, 3rem + 8vw, 10rem);
+  --radius-s: 6px;
+  --radius-m: 14px;
+  --radius-l: 28px;
+
+  /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  color-scheme: light;
+}
+
+/* ---------- reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 5rem;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-read);
+  font-size: var(--step-0);
+  line-height: 1.65;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-ui);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background: var(--blue);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- utilities ---------- */
+.container {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  margin-inline: auto;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: var(--ink);
+  color: #fff;
+  font-family: var(--font-ui);
+  border-radius: var(--radius-s);
+  transition: top 0.2s var(--ease-out);
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
+/* Section heading pattern: a short lead sentence under a large heading. */
+.section-head {
+  display: grid;
+  gap: 1rem;
+  max-width: 46rem;
+  margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+}
+
+.section-head h2 {
+  font-size: var(--step-4);
+}
+
+.section-head p {
+  font-size: var(--step-1);
+  color: var(--muted);
+  max-width: 38rem;
+}
+
+/* Line-mask reveal used by headings (split by JS into .line > .line-inner). */
+.line {
+  display: block;
+  overflow: clip;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+.line-inner {
+  display: block;
+}
+
+/* Cross-document page transitions (Chrome, Edge, Safari 18.2+). */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: var(--ease-in-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  @view-transition {
+    navigation: none;
+  }
+}
