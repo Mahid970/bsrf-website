@@ -1,0 +1,358 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/brand/bsrf-mark.png';
+import { nav, site } from '../data/site';
+
+const path = Astro.url.pathname;
+---
+
+<header class="site-header" data-header>
+  <div class="bar container">
+    <a class="brand" href="/" aria-label={`${site.name}, home`}>
+      <Image src={mark} alt="" width={44} height={44} densities={[1, 2]} loading="eager" class="brand-mark" />
+      <span class="brand-text">
+        <span class="brand-short">{site.short}</span>
+        <span class="brand-long">BankSure Scientific<br />Research Forum</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Main">
+      <ul>
+        {
+          nav.map((item) => (
+            <li>
+              <a href={item.href} aria-current={item.href === path ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="cta" href="/#join">Join the forum</a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <span class="visually-hidden" data-menu-label>Open menu</span>
+      <span class="burger" aria-hidden="true"><span></span><span></span></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" data-menu hidden>
+    <nav aria-label="Mobile">
+      <ul>
+        {
+          nav.map((item, i) => (
+            <li style={`--i:${i}`}>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="mobile-foot" style={`--i:${nav.length}`}>
+      <a class="cta cta-block" href="/#join">Join the forum</a>
+      <a class="fb" href={site.facebook} target="_blank" rel="noopener">Follow us on Facebook</a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    transition:
+      transform 0.5s var(--ease-out),
+      background-color 0.4s ease,
+      box-shadow 0.4s ease;
+  }
+
+  .site-header.is-scrolled {
+    background: rgb(245 246 250 / 0.78);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow: 0 1px 0 var(--line);
+  }
+
+  .site-header.is-hidden {
+    transform: translateY(-100%);
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    height: 4.5rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    text-decoration: none;
+    font-family: var(--font-ui);
+    margin-right: auto;
+  }
+
+  .brand-mark {
+    width: 44px;
+    height: 44px;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .brand:hover .brand-mark {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  .brand-text {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .brand-short {
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -0.02em;
+  }
+
+  .brand-long {
+    font-size: 0.72rem;
+    line-height: 1.15;
+    color: var(--muted);
+    padding-left: 0.65rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .nav a {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.8rem;
+    font-family: var(--font-ui);
+    font-size: 0.95rem;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 999px;
+    transition:
+      background-color 0.25s ease,
+      color 0.25s ease;
+  }
+
+  .nav a:hover {
+    background: var(--blue-tint);
+    color: var(--blue);
+  }
+
+  .nav a[aria-current='page'] {
+    color: var(--blue);
+  }
+
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.2rem;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #fff;
+    background: var(--blue);
+    border-radius: 999px;
+    text-decoration: none;
+    transition:
+      background-color 0.25s ease,
+      transform 0.4s var(--ease-out);
+  }
+
+  .cta:hover {
+    background: var(--blue-deep);
+    transform: translateY(-2px);
+  }
+
+  .menu-toggle {
+    display: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--surface);
+    box-shadow: inset 0 0 0 1px var(--line);
+    place-items: center;
+  }
+
+  .burger {
+    display: grid;
+    gap: 6px;
+    width: 18px;
+  }
+
+  .burger span {
+    display: block;
+    height: 2px;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: transform 0.45s var(--ease-out);
+  }
+
+  .menu-open .burger span:first-child {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  .menu-open .burger span:last-child {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  /* ---------- mobile menu ---------- */
+  .mobile-menu {
+    position: fixed;
+    inset: 4.5rem 0 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem var(--gutter) 2.5rem;
+    background: var(--paper);
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.6s var(--ease-in-out);
+  }
+
+  .mobile-menu[hidden] {
+    display: flex;
+    visibility: hidden;
+  }
+
+  .menu-open .mobile-menu {
+    clip-path: inset(0 0 0 0);
+    visibility: visible;
+  }
+
+  .mobile-menu ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.25rem;
+  }
+
+  .mobile-menu li,
+  .mobile-foot {
+    opacity: 0;
+    transform: translateY(1.5rem);
+    transition:
+      opacity 0.5s ease,
+      transform 0.7s var(--ease-out);
+    transition-delay: calc(0.15s + var(--i) * 0.06s);
+  }
+
+  .menu-open .mobile-menu li,
+  .menu-open .mobile-foot {
+    opacity: 1;
+    transform: none;
+  }
+
+  .mobile-menu li a {
+    display: block;
+    padding: 0.35rem 0;
+    font-family: var(--font-ui);
+    font-size: clamp(2.2rem, 10vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+  }
+
+  .mobile-foot {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .cta-block {
+    padding: 1rem;
+    font-size: 1.05rem;
+  }
+
+  .fb {
+    font-family: var(--font-ui);
+    text-align: center;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1080px) {
+    .brand-long {
+      display: none;
+    }
+  }
+
+  @media (max-width: 880px) {
+    .nav,
+    .bar > .cta {
+      display: none;
+    }
+
+    .menu-toggle {
+      display: grid;
+    }
+
+    .menu-open {
+      background: var(--paper);
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const label = document.querySelector<HTMLElement>('[data-menu-label]');
+
+  if (header && toggle && menu && label) {
+    let lastY = window.scrollY;
+    let open = false;
+
+    const onScroll = () => {
+      const y = window.scrollY;
+      header.classList.toggle('is-scrolled', y > 24);
+      if (!open) header.classList.toggle('is-hidden', y > 320 && y > lastY + 2);
+      if (y < lastY - 2) header.classList.remove('is-hidden');
+      lastY = y;
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    const setOpen = (next: boolean) => {
+      open = next;
+      header.classList.toggle('menu-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      label.textContent = open ? 'Close menu' : 'Open menu';
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+      window.dispatchEvent(new CustomEvent(open ? 'bsrf:scroll-lock' : 'bsrf:scroll-unlock'));
+      if (open) {
+        menu.hidden = false;
+        header.classList.remove('is-hidden');
+        menu.querySelector('a')?.focus({ preventScroll: true });
+      } else {
+        window.setTimeout(() => {
+          if (!open) menu.hidden = true;
+        }, 600);
+      }
+    };
+
+    toggle.addEventListener('click', () => setOpen(!open));
+    menu.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && open) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+    window.matchMedia('(min-width: 881px)').addEventListener('change', (e) => {
+      if (e.matches && open) setOpen(false);
+    });
+  }
+</script>

@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { Font } from 'astro:assets';
 import { site } from '../data/site';
+import Header from '../components/Header.astro';
 
 interface Props {
   title?: string;
@@ -65,6 +66,7 @@ const orgJsonLd = {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
+    <Header />
     <main id="main">
       <slot />
     </main>
