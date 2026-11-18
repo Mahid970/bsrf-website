@@ -38,7 +38,7 @@
     max-height: none;
     padding: 0;
     border: 0;
-    background: rgb(13 11 59 / 0.96);
+    background: rgb(13 11 59 / 0.985);
     color: var(--on-night);
     display: grid;
     grid-template-rows: 1fr auto;
@@ -59,21 +59,24 @@
     background: transparent;
   }
 
+  .lightbox :global(:focus-visible) {
+    outline-color: #fff;
+  }
+
   .stage {
-    display: grid;
-    place-items: center;
+    position: relative;
     min-height: 0;
-    padding: clamp(1rem, 3vw, 2.5rem) clamp(0.75rem, 3vw, 2.5rem) 0;
+    overflow: hidden;
     touch-action: pan-y;
   }
 
   .photo {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
+    position: absolute;
+    inset: clamp(1rem, 3vw, 2.5rem) clamp(0.75rem, 3vw, 2.5rem) 0;
+    width: calc(100% - 2 * clamp(0.75rem, 3vw, 2.5rem));
+    height: calc(100% - clamp(1rem, 3vw, 2.5rem));
+    max-width: none;
     object-fit: contain;
-    border-radius: var(--radius-s);
     user-select: none;
     -webkit-user-drag: none;
   }
