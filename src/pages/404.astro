@@ -1,0 +1,123 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="Page not found" description="This page does not exist.">
+  <section class="nf container">
+    <div class="chart" aria-hidden="true">
+      <span style="--h: 62%"></span>
+      <span style="--h: 38%"></span>
+      <span style="--h: 14%"></span>
+      <span class="gone" style="--h: 2%"></span>
+    </div>
+    <div class="text">
+      <p class="code">Error 404</p>
+      <h1>This page fell off the chart.</h1>
+      <p>The link may be old or mistyped. Try the home page or the list of events.</p>
+      <div class="links">
+        <a class="primary" href="/">Go to the home page</a>
+        <a href="/events/">See events</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 80svh;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    gap: 3rem 5rem;
+    align-items: center;
+    padding-top: 8rem;
+    padding-bottom: 4rem;
+  }
+
+  .chart {
+    height: 18rem;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    align-items: end;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .chart span {
+    height: var(--h);
+    background: var(--blue);
+    border-radius: 6px 6px 0 0;
+    transform-origin: bottom;
+    animation: fall 1.6s var(--ease-out) both;
+  }
+
+  .chart span:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .chart span:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .chart .gone {
+    background: var(--green);
+    animation-delay: 0.3s;
+  }
+
+  @keyframes fall {
+    from {
+      transform: scaleY(1.6);
+    }
+  }
+
+  .text {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .code {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    color: var(--green-ink);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    max-width: 14ch;
+  }
+
+  .text > p:not(.code) {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    align-items: center;
+    font-family: var(--font-ui);
+    font-weight: 600;
+  }
+
+  .links a {
+    color: var(--blue);
+  }
+
+  .links .primary {
+    padding: 0.9rem 1.4rem;
+    border-radius: 999px;
+    background: var(--blue);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  @media (max-width: 760px) {
+    .nf {
+      grid-template-columns: 1fr;
+    }
+
+    .chart {
+      height: 10rem;
+    }
+  }
+</style>
