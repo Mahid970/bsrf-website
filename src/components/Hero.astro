@@ -362,9 +362,17 @@ const lede = `${site.short} is where faculty members and students of the ${site.
       padding-top: 6rem;
     }
 
+    /* On phones the gridlines live inside the chart so they meet the bars. */
     .gridlines {
-      inset: auto 0 4.5rem;
-      height: clamp(17rem, 52vw, 22rem);
+      display: none;
+    }
+
+    .chart::before {
+      content: '';
+      position: absolute;
+      inset: 0 calc(var(--gutter) * -1);
+      background: repeating-linear-gradient(to top, var(--line) 0 1px, transparent 1px 16.666%);
+      border-bottom: 2px solid var(--ink);
     }
 
     .hero-inner {
@@ -433,8 +441,10 @@ const lede = `${site.short} is where faculty members and students of the ${site.
       const pts = points();
       const last = pts[pts.length - 1];
       const prev = pts[pts.length - 2];
-      // extend past the last bar along the same slope, as an arrow
-      const ext = { x: last.x + (last.x - prev.x) * 0.45, y: last.y + (last.y - prev.y) * 0.45 - 6 };
+      // extend past the last bar along the same slope, as an arrow (kept inside the chart)
+      const room = Math.max(0, c.width - 10 - last.x);
+      const t = Math.min(0.45, room / Math.max(1, last.x - prev.x));
+      const ext = { x: last.x + (last.x - prev.x) * t, y: last.y + (last.y - prev.y) * t - 6 };
       const lift = 26; // keep the line above the bar tops
       const d = [...pts.map((p) => ({ x: p.x, y: p.y - lift })), { x: ext.x, y: ext.y - lift }]
         .map((p, i) => `${i ? 'L' : 'M'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`)
