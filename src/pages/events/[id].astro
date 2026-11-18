@@ -1,0 +1,271 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Image, getImage } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+import { formatDate } from '../../utils/format';
+
+export const getStaticPaths = (async () => {
+  const events = await getCollection('events');
+  return events.map((entry) => ({ params: { id: entry.id }, props: { entry } }));
+}) satisfies GetStaticPaths;
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const { title, date, location, summary, cover, coverAlt, gallery } = entry.data;
+
+const photos = await Promise.all(
+  gallery.map(async (p) => ({
+    ...p,
+    full: (await getImage({ src: p.src, width: 1800, format: 'webp' })).src,
+  })),
+);
+---
+
+<Base title={title} description={summary}>
+  <article class="event">
+    <header class="head container">
+      <a class="back" href="/events/">All events</a>
+      <p class="meta" data-reveal="fade">
+        <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
+        <span>{location}</span>
+      </p>
+      <h1 data-reveal="words">{title}</h1>
+      <p class="summary" data-reveal="fade">{summary}</p>
+    </header>
+
+    <div class="cover container">
+      <div class="cover-frame" style={`view-transition-name: cover-${entry.id}`}>
+        <Image src={cover} alt={coverAlt} layout="full-width" sizes="(min-width: 1240px) 1240px, 100vw" loading="eager" />
+      </div>
+    </div>
+
+    <div class="body container">
+      <div class="prose" data-reveal="fade">
+        <Content />
+      </div>
+    </div>
+
+    {
+      photos.length > 0 && (
+        <section class="gallery container" aria-labelledby="gallery-title">
+          <h2 id="gallery-title" data-reveal="words">
+            {`Photos (${photos.length})`}
+          </h2>
+          <ul class="masonry">
+            {photos.map((p) => (
+              <li data-reveal="fade">
+                <button
+                  type="button"
+                  class="thumb"
+                  data-lightbox={`event-${entry.id}`}
+                  data-src={p.full}
+                  data-alt={p.alt}
+                  data-caption={p.caption ?? ''}
+                  aria-label={`Open photo: ${p.caption ?? p.alt}`}
+                >
+                  <Image src={p.src} alt={p.alt} widths={[400, 640, 960]} sizes="(min-width: 1100px) 30vw, (min-width: 640px) 45vw, 92vw" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    <aside class="next container" data-reveal="fade">
+      <p>Want to be part of the next one?</p>
+      <a href="/#join">See how to join {site.short}</a>
+    </aside>
+  </article>
+</Base>
+
+<style>
+  .event {
+    padding-top: 7.5rem;
+    padding-bottom: var(--section);
+  }
+
+  .head {
+    display: grid;
+    gap: 1.25rem;
+    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4rem);
+  }
+
+  .back {
+    justify-self: start;
+    font-family: var(--font-ui);
+    font-weight: 600;
+    color: var(--blue);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .back::before {
+    content: '';
+    width: 0.5rem;
+    height: 0.5rem;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .back:hover::before {
+    transform: translateX(-4px) rotate(45deg);
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+    font-family: var(--font-ui);
+    color: var(--muted);
+  }
+
+  .meta time {
+    color: var(--green-ink);
+    font-weight: 600;
+  }
+
+  h1 {
+    font-size: var(--step-5);
+    letter-spacing: -0.035em;
+    max-width: 14ch;
+  }
+
+  .summary {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 40rem;
+  }
+
+  .cover-frame {
+    aspect-ratio: 21 / 9;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    background: var(--blue-tint);
+  }
+
+  .cover-frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .body {
+    padding-block: clamp(3rem, 2rem + 4vw, 6rem);
+  }
+
+  .prose {
+    max-width: 40rem;
+    margin-inline: auto;
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--ink-soft);
+  }
+
+  .prose :global(> * + *) {
+    margin-top: 1.25em;
+  }
+
+  .prose :global(h2) {
+    margin-top: 2.2em;
+    font-size: var(--step-3);
+    color: var(--ink);
+  }
+
+  .prose :global(ul) {
+    padding-left: 1.2em;
+  }
+
+  .prose :global(li + li) {
+    margin-top: 0.6em;
+  }
+
+  .prose :global(li::marker) {
+    color: var(--green);
+  }
+
+  .prose :global(strong) {
+    color: var(--ink);
+    font-weight: 650;
+  }
+
+  .prose :global(a) {
+    color: var(--blue);
+  }
+
+  .gallery h2 {
+    font-size: var(--step-4);
+    margin-bottom: 2rem;
+  }
+
+  .masonry {
+    columns: 3 18rem;
+    column-gap: 1rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .masonry li {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+  }
+
+  .thumb {
+    display: block;
+    width: 100%;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    cursor: zoom-in;
+    background: var(--blue-tint);
+  }
+
+  .thumb :global(img) {
+    width: 100%;
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .thumb:hover :global(img) {
+    transform: scale(1.05);
+  }
+
+  .next {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(3rem, 2rem + 4vw, 6rem);
+    padding-top: 2rem;
+    border-top: 2px solid var(--ink);
+    font-family: var(--font-ui);
+  }
+
+  .next p {
+    font-size: var(--step-3);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .next a {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--blue);
+  }
+
+  @media (max-width: 880px) {
+    .event {
+      padding-top: 6.5rem;
+    }
+
+    .cover-frame {
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-m);
+    }
+  }
+</style>
