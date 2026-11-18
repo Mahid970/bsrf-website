@@ -403,7 +403,7 @@ const lede = `${site.short} is where faculty members and students of the ${site.
 </style>
 
 <script>
-  import { gsap } from 'gsap';
+  import { gsap, reduceMotion as reduce } from '../scripts/motion';
 
   const hero = document.querySelector<HTMLElement>('[data-hero]');
   const chart = document.querySelector<HTMLElement>('[data-chart]');
@@ -416,8 +416,6 @@ const lede = `${site.short} is where faculty members and students of the ${site.
   const pillarData: { title: string; body: string }[] = JSON.parse(
     document.getElementById('pillar-data')?.textContent || '[]',
   );
-
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (hero && chart && svg && path && bars.length) {
     /* ---- trend line follows the tops of the bars ---- */
