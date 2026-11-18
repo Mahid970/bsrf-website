@@ -4,7 +4,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
   // Public URL of the deployed site (used for canonical links and social cards).
-  site: 'https://bsrf-website.workers.dev',
+  site: 'https://bsrf-website.mmahidujjaman.workers.dev',
 
   // Fonts are downloaded at build time and served from this site (no Google requests at runtime).
   fonts: [
