@@ -1,0 +1,261 @@
+---
+/**
+ * One shared photo viewer. Any element with data-lightbox="<group>" and
+ * data-src opens it; photos in the same group can be browsed with the
+ * arrows, arrow keys or a swipe.
+ */
+---
+
+<dialog class="lightbox" data-lb aria-label="Photo viewer">
+  <div class="stage" data-lb-stage>
+    <img class="photo" data-lb-img alt="" decoding="async" />
+  </div>
+
+  <div class="bar">
+    <p class="caption" data-lb-caption></p>
+    <p class="count" data-lb-count aria-live="polite"></p>
+    <div class="controls">
+      <button type="button" class="ctrl" data-lb-prev aria-label="Previous photo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"></path></svg>
+      </button>
+      <button type="button" class="ctrl" data-lb-next aria-label="Next photo">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"></path></svg>
+      </button>
+      <button type="button" class="ctrl close" data-lb-close aria-label="Close photo viewer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: rgb(13 11 59 / 0.96);
+    color: var(--on-night);
+    display: grid;
+    grid-template-rows: 1fr auto;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.35s ease,
+      visibility 0s linear 0.35s;
+  }
+
+  .lightbox[open] {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.35s ease;
+  }
+
+  .lightbox::backdrop {
+    background: transparent;
+  }
+
+  .stage {
+    display: grid;
+    place-items: center;
+    min-height: 0;
+    padding: clamp(1rem, 3vw, 2.5rem) clamp(0.75rem, 3vw, 2.5rem) 0;
+    touch-action: pan-y;
+  }
+
+  .photo {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: var(--radius-s);
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 1rem 1.5rem;
+    padding: 1rem clamp(1rem, 3vw, 2.5rem) 1.25rem;
+    font-family: var(--font-ui);
+  }
+
+  .caption {
+    font-size: 1rem;
+  }
+
+  .count {
+    font-size: 0.9rem;
+    color: var(--on-night-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .ctrl {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    box-shadow: inset 0 0 0 1px var(--night-line);
+    transition: background-color 0.25s ease;
+  }
+
+  .ctrl:hover {
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  .ctrl svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .close {
+    background: var(--on-night);
+    color: var(--night);
+  }
+
+  .close:hover {
+    background: #fff;
+  }
+
+  .lightbox.single [data-lb-prev],
+  .lightbox.single [data-lb-next],
+  .lightbox.single .count {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .bar {
+      grid-template-columns: 1fr auto;
+    }
+
+    .caption {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, reduceMotion } from '../scripts/motion';
+
+  const dialog = document.querySelector<HTMLDialogElement>('[data-lb]');
+  const img = document.querySelector<HTMLImageElement>('[data-lb-img]');
+  const caption = document.querySelector<HTMLElement>('[data-lb-caption]');
+  const count = document.querySelector<HTMLElement>('[data-lb-count]');
+  const stage = document.querySelector<HTMLElement>('[data-lb-stage]');
+
+  type Item = { src: string; alt: string; caption: string; trigger: HTMLElement };
+
+  if (dialog && img && caption && count && stage) {
+    let items: Item[] = [];
+    let index = 0;
+    let lastTrigger: HTMLElement | null = null;
+
+    const render = (dir = 0) => {
+      const item = items[index];
+      const swap = () => {
+        img.src = item.src;
+        img.alt = item.alt;
+        caption.textContent = item.caption;
+        count.textContent = `${index + 1} / ${items.length}`;
+      };
+      if (reduceMotion || dir === 0) {
+        swap();
+        if (!reduceMotion) gsap.fromTo(img, { scale: 0.94, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.6, ease: 'expo.out' });
+        return;
+      }
+      gsap.to(img, {
+        x: -40 * dir,
+        opacity: 0,
+        duration: 0.2,
+        ease: 'power2.in',
+        onComplete: () => {
+          swap();
+          const show = () => gsap.fromTo(img, { x: 40 * dir, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: 'power3.out' });
+          if (img.complete) show();
+          else img.addEventListener('load', show, { once: true });
+        },
+      });
+      // warm the next photo in the same direction
+      const next = items[(index + dir + items.length) % items.length];
+      if (next) new Image().src = next.src;
+    };
+
+    const go = (dir: number) => {
+      if (items.length < 2) return;
+      index = (index + dir + items.length) % items.length;
+      render(dir);
+    };
+
+    const open = (trigger: HTMLElement) => {
+      const group = trigger.dataset.lightbox;
+      const all = [...document.querySelectorAll<HTMLElement>(`[data-lightbox="${group}"]`)];
+      items = all.map((el) => ({
+        src: el.dataset.src ?? '',
+        alt: el.dataset.alt ?? '',
+        caption: el.dataset.caption ?? '',
+        trigger: el,
+      }));
+      index = Math.max(0, all.indexOf(trigger));
+      lastTrigger = trigger;
+      dialog.classList.toggle('single', items.length < 2);
+      render(0);
+      dialog.showModal();
+      window.dispatchEvent(new CustomEvent('bsrf:scroll-lock'));
+    };
+
+    const close = () => dialog.close();
+
+    dialog.addEventListener('close', () => {
+      window.dispatchEvent(new CustomEvent('bsrf:scroll-unlock'));
+      lastTrigger?.focus({ preventScroll: true });
+    });
+
+    document.addEventListener('click', (e) => {
+      const trigger = (e.target as HTMLElement).closest<HTMLElement>('[data-lightbox]');
+      if (trigger) {
+        e.preventDefault();
+        open(trigger);
+      }
+    });
+
+    dialog.querySelector('[data-lb-prev]')?.addEventListener('click', () => go(-1));
+    dialog.querySelector('[data-lb-next]')?.addEventListener('click', () => go(1));
+    dialog.querySelector('[data-lb-close]')?.addEventListener('click', close);
+
+    // click on the dark area (not the photo) closes
+    stage.addEventListener('click', (e) => {
+      if (e.target === stage) close();
+    });
+
+    dialog.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(1);
+      if (e.key === 'ArrowLeft') go(-1);
+    });
+
+    // swipe
+    let startX = 0;
+    stage.addEventListener('pointerdown', (e) => (startX = e.clientX));
+    stage.addEventListener('pointerup', (e) => {
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 50) go(dx < 0 ? 1 : -1);
+    });
+  }
+</script>
