@@ -1,0 +1,242 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/brand/bsrf-mark.png';
+import { nav, site } from '../data/site';
+
+const words = site.tagline.split(' ');
+const year = new Date().getFullYear();
+---
+
+<footer class="footer" id="contact">
+  <div class="container">
+    <p class="tagline" aria-label={site.tagline} data-tagline>
+      {
+        words.map((w) => (
+          <span class="tw" aria-hidden="true">
+            <span class="tw-inner">{w}</span>
+          </span>
+        ))
+      }
+    </p>
+
+    <div class="cols">
+      <div class="col brand">
+        <Image src={mark} alt="" width={64} height={64} densities={[1, 2]} class="mark" />
+        <p>
+          <strong>{site.name}</strong>
+          <span>{site.department}, {site.university}</span>
+        </p>
+      </div>
+
+      <div class="col">
+        <h2>Visit</h2>
+        <address>
+          {site.department}
+          <br />
+          {site.faculty}
+          <br />
+          {site.university}, {site.city}
+        </address>
+        <a href={site.mapUrl} target="_blank" rel="noopener">Open in Google Maps</a>
+      </div>
+
+      <div class="col">
+        <h2>Follow</h2>
+        <a href={site.facebook} target="_blank" rel="noopener">Facebook page</a>
+        {site.email && <a href={`mailto:${site.email}`}>{site.email}</a>}
+      </div>
+
+      <div class="col">
+        <h2>Explore</h2>
+        <ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="base">
+      <p>© {year} {site.name}</p>
+      <a href="#main" class="top" data-to-top>Back to top</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--blue);
+    color: #fff;
+    padding-top: clamp(4rem, 3rem + 6vw, 8rem);
+    border-radius: var(--radius-l) var(--radius-l) 0 0;
+    font-family: var(--font-ui);
+    overflow: hidden;
+  }
+
+  .tagline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.28em;
+    font-size: clamp(3rem, 1rem + 9.5vw, 10.5rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+    margin-bottom: clamp(3rem, 2rem + 5vw, 6.5rem);
+  }
+
+  .tw {
+    display: inline-block;
+    overflow: clip;
+    padding-bottom: 0.08em;
+  }
+
+  .tw-inner {
+    display: inline-block;
+  }
+
+  .tw:nth-child(2) .tw-inner {
+    color: var(--green);
+  }
+
+  .tw:nth-child(3) .tw-inner {
+    color: #c9c6ff;
+  }
+
+  .cols {
+    display: grid;
+    grid-template-columns: 1.4fr 1.2fr 0.8fr 0.8fr;
+    gap: 2.5rem 2rem;
+    padding-bottom: 3rem;
+  }
+
+  .col {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    font-size: 1rem;
+  }
+
+  .col h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #c9c6ff;
+    letter-spacing: 0;
+    margin-bottom: 0.25rem;
+  }
+
+  .col a {
+    color: #fff;
+    text-decoration-color: rgb(255 255 255 / 0.4);
+    transition: text-decoration-color 0.2s ease;
+  }
+
+  .col a:hover {
+    text-decoration-color: #fff;
+  }
+
+  .col ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .col ul a {
+    text-decoration: none;
+  }
+
+  .col ul a:hover {
+    text-decoration: underline;
+  }
+
+  address {
+    font-style: normal;
+    line-height: 1.5;
+  }
+
+  .brand {
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .mark {
+    width: 64px;
+    height: 64px;
+    padding: 6px;
+    background: #fff;
+    border-radius: 16px;
+  }
+
+  .brand p {
+    display: grid;
+    gap: 0.3rem;
+    line-height: 1.35;
+  }
+
+  .brand span {
+    color: #c9c6ff;
+    font-size: 0.95rem;
+  }
+
+  .base {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem 0 2rem;
+    border-top: 1px solid rgb(255 255 255 / 0.2);
+    font-size: 0.9rem;
+    color: #c9c6ff;
+  }
+
+  .top {
+    color: #fff;
+  }
+
+  .footer :global(:focus-visible) {
+    outline-color: #fff;
+  }
+
+  @media (max-width: 960px) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .brand {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cols {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, lenis, reduceMotion } from '../scripts/motion';
+
+  const tagline = document.querySelector<HTMLElement>('[data-tagline]');
+  if (tagline && !reduceMotion) {
+    gsap.from(tagline.querySelectorAll('.tw-inner'), {
+      yPercent: 105,
+      rotate: 4,
+      duration: 1.3,
+      ease: 'expo.out',
+      stagger: 0.12,
+      scrollTrigger: { trigger: tagline, start: 'top 85%', once: true },
+    });
+  }
+
+  document.querySelector('[data-to-top]')?.addEventListener('click', (e) => {
+    if (!lenis) return;
+    e.preventDefault();
+    lenis.scrollTo(0, { duration: 1.6 });
+  });
+</script>

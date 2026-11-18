@@ -4,6 +4,7 @@ import { Font } from 'astro:assets';
 import { site } from '../data/site';
 import Header from '../components/Header.astro';
 import Lightbox from '../components/Lightbox.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
   title?: string;
@@ -75,6 +76,7 @@ const orgJsonLd = {
     <main id="main">
       <slot />
     </main>
+    <Footer />
     <Lightbox />
     <script>
       import '../scripts/motion';
