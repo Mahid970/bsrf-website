@@ -1,10 +1,11 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import { site } from '../data/site';
-import { launchPhotos, reelPhotos } from '../data/photos';
+import { getLaunchPhotos, homePicks } from '../data/photos';
 
+const launchPhotos = await getLaunchPhotos();
 const frames = await Promise.all(
-  reelPhotos.map(async (p) => {
+  homePicks.reel.map((i) => launchPhotos[i]).map(async (p) => {
     const full = await getImage({ src: p.src, width: 1800, format: 'webp' });
     return { ...p, full: full.src, portrait: p.src.height > p.src.width };
   }),

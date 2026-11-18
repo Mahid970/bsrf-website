@@ -1,9 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 import { site } from '../data/site';
-import { launchPhotos } from '../data/photos';
+import { getLaunchPhotos, homePicks } from '../data/photos';
 
-const hall = launchPhotos[3];
+const hall = (await getLaunchPhotos())[homePicks.about];
 
 const facts = [
   { label: 'Founded', value: site.foundedLabel },

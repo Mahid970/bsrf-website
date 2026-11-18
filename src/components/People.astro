@@ -1,9 +1,9 @@
 ---
 import { Image } from 'astro:assets';
 import { people, site } from '../data/site';
-import { launchPhotos } from '../data/photos';
+import { getLaunchPhotos, homePicks } from '../data/photos';
 
-const panel = launchPhotos[16];
+const panel = (await getLaunchPhotos())[homePicks.people];
 const named = people.filter((p) => p.name.trim());
 const groups = (['Advisors', 'Executive committee'] as const)
   .map((g) => ({ name: g, members: named.filter((p) => p.group === g) }))
