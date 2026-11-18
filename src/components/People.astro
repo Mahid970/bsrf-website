@@ -1,0 +1,191 @@
+---
+import { Image } from 'astro:assets';
+import { people, site } from '../data/site';
+import { launchPhotos } from '../data/photos';
+
+const panel = launchPhotos[16];
+const named = people.filter((p) => p.name.trim());
+const groups = (['Advisors', 'Executive committee'] as const)
+  .map((g) => ({ name: g, members: named.filter((p) => p.group === g) }))
+  .filter((g) => g.members.length);
+
+const initials = (name: string) =>
+  name
+    .replace(/^(Dr|Prof|Professor|Md|Mr|Ms|Mrs)\.?\s+/i, '')
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
+---
+
+<section class="people" id="people" aria-labelledby="people-title">
+  <div class="container">
+    <div class="layout">
+      <div class="text">
+        <h2 id="people-title" data-reveal="words">The people behind the forum</h2>
+        <p data-reveal="fade">
+          Faculty members of the {site.department} advise the forum, and a student executive committee runs its day-to-day work.
+        </p>
+        {
+          !groups.length && (
+            <p class="note" data-reveal="fade">
+              Advisor and committee profiles are coming soon. Until then, reach the team on{' '}
+              <a href={site.facebook} target="_blank" rel="noopener">
+                Facebook
+              </a>
+              .
+            </p>
+          )
+        }
+      </div>
+
+      <figure class="photo">
+        <div class="frame" data-reveal="clip">
+          <Image src={panel.src} alt={panel.alt} widths={[480, 768, 1080, 1440]} sizes="(min-width: 881px) 55vw, 100vw" />
+        </div>
+        <figcaption>Faculty members at the launch, {site.foundedLabel}.</figcaption>
+      </figure>
+    </div>
+
+    {
+      groups.map((g) => (
+        <div class="group">
+          <h3>{g.name}</h3>
+          <ul class="grid" data-reveal-stagger>
+            {g.members.map((p) => (
+              <li class="person">
+                <span class="avatar" aria-hidden="true">
+                  {initials(p.name)}
+                </span>
+                <span class="name">{p.name}</span>
+                <span class="role">{p.role}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .people {
+    padding-block: var(--section);
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+  }
+
+  .text {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  h2 {
+    font-size: var(--step-4);
+    max-width: 12ch;
+  }
+
+  .text p {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: 30rem;
+  }
+
+  .note {
+    padding-left: 1rem;
+    border-left: 3px solid var(--green);
+    font-size: 1rem !important;
+  }
+
+  .note a {
+    color: var(--blue);
+  }
+
+  .photo {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .frame {
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    background: var(--blue-tint);
+  }
+
+  .frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  figcaption {
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  .group {
+    margin-top: clamp(3rem, 2rem + 3vw, 5rem);
+  }
+
+  h3 {
+    font-size: var(--step-2);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: 2rem 1.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .person {
+    display: grid;
+    gap: 0.2rem;
+    font-family: var(--font-ui);
+  }
+
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 50%;
+    background: var(--blue-tint);
+    color: var(--blue);
+    font-weight: 700;
+    font-size: 1.3rem;
+  }
+
+  .name {
+    font-weight: 650;
+    font-size: 1.15rem;
+  }
+
+  .role {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 880px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .frame {
+      border-radius: var(--radius-m);
+    }
+  }
+</style>
