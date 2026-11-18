@@ -26,3 +26,6 @@ pnpm-debug.log*
 # cloudflare wrangler
 .wrangler/
 .dev.vars
+
+# local editor/agent config
+.claude/
