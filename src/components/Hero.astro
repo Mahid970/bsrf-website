@@ -187,6 +187,11 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
     grid-row: 1 / -1;
   }
 
+  /* Keep the audience, not the ceiling, in view when the tile is narrow. */
+  .tile-main :global(img) {
+    object-position: 50% 78%;
+  }
+
   .tile :global(img) {
     width: 100%;
     height: 100%;
@@ -198,7 +203,7 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
     position: absolute;
     left: clamp(-2.5rem, -3vw, -1rem);
     bottom: clamp(-2rem, -2.5vw, -1rem);
-    width: min(23rem, 85%);
+    width: min(23rem, 72%);
     display: grid;
     gap: 0.75rem;
     padding: 1.1rem 1.25rem 1.25rem;
