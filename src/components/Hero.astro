@@ -281,10 +281,7 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
 
   @media (max-width: 980px) {
     .hero::before {
-      top: auto;
-      left: 0;
-      width: auto;
-      height: 38%;
+      display: none;
     }
 
     .grid {
@@ -318,7 +315,11 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
     }
 
     .next {
-      margin: -1.5rem 0.5rem 0;
+      margin: 0.75rem 0 0;
+    }
+
+    .actions {
+      flex-direction: column;
     }
   }
 </style>

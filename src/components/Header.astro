@@ -313,7 +313,8 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
   }
 
   @media (max-width: 640px) {
-    .utility ul {
+    /* The header already names the university on phones. */
+    .utility {
       display: none;
     }
 
@@ -328,6 +329,7 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
 
     .brand-name {
       font-size: 0.9rem;
+      text-wrap: balance;
     }
 
     .brand-sub {
