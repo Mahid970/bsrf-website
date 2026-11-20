@@ -1,10 +1,11 @@
 ---
-/** Title block for inner pages. */
+/** Title block for inner pages, with a breadcrumb back up the site. */
 interface Props {
   title: string;
   lead?: string;
+  /** Parent page for the breadcrumb, e.g. Events for an event page. */
   back?: { href: string; label: string };
-  /** Short label in the pill above the title, e.g. the event type. */
+  /** Category shown as a chip above the title, e.g. the event type. */
   kind?: string;
 }
 
@@ -12,25 +13,24 @@ const { title, lead, back, kind } = Astro.props;
 ---
 
 <header class="page-header container">
-  {
-    back && (
-      <a class="back link-grow" href={back.href}>
-        {back.label}
-      </a>
-    )
-  }
-  {
-    kind && (
-      <p class="pill rise">
-        <span class="pill-dot" aria-hidden="true" />
-        {kind}
-      </p>
-    )
-  }
-  <h1 class="display rise" style="--i:1">{title}</h1>
+  <nav class="crumbs enter" aria-label="Breadcrumb">
+    <a href="/">Home</a>
+    <span aria-hidden="true">/</span>
+    {
+      back ? (
+        <>
+          <a href={back.href}>{back.label}</a>
+          <span aria-hidden="true">/</span>
+        </>
+      ) : null
+    }
+    <span class="here" aria-current="page">{title}</span>
+  </nav>
+  {kind && <span class="chip enter">{kind}</span>}
+  <h1 class="enter" style="--i:1">{title}</h1>
   {
     lead && (
-      <p class="lead muted rise" style="--i:2">
+      <p class="lead muted enter" style="--i:2">
         {lead}
       </p>
     )
@@ -43,20 +43,44 @@ const { title, lead, back, kind } = Astro.props;
     display: grid;
     justify-items: start;
     gap: 1rem;
-    padding-block: clamp(2rem, 1rem + 4vw, 4rem) clamp(1.5rem, 1rem + 2vw, 2.5rem);
+    padding-block: clamp(2rem, 1rem + 4vw, 4rem) clamp(2rem, 1.5rem + 2vw, 3rem);
   }
 
-  .back {
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
     font-size: var(--text-sm);
+    color: var(--muted);
+  }
+
+  .here {
+    max-width: 22rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .crumbs a {
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  .crumbs a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--green-bright);
+    text-underline-offset: 0.25em;
   }
 
   h1 {
-    max-width: 22ch;
-    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
+    max-width: 20ch;
+    font-size: clamp(2.2rem, 1.4rem + 3.2vw, 3.4rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
   }
 
   .lead {
     max-width: 44rem;
-    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    font-size: 1.15rem;
   }
 </style>
