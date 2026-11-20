@@ -1,6 +1,10 @@
+import type { ImageMetadata } from 'astro';
+
 /**
  * All editable site content lives here.
- * Anything marked TODO is a placeholder: replace it with the forum's real details.
+ *
+ * Entries marked SAMPLE are dummy content that shows how the design looks
+ * when filled in. Replace them with the forum's real details.
  */
 
 export const site = {
@@ -17,105 +21,163 @@ export const site = {
   foundedLabel: '15 November 2026',
   firstVenue: 'Room 120',
 
-  /** Links */
   facebook: 'https://www.facebook.com/profile.php?id=61595603985680',
   mapUrl: 'https://maps.google.com/?q=Faculty+of+Business+Administration,+University+of+Chittagong',
 
-  /** TODO: add the forum's email address. Leave empty to hide it. */
-  email: '',
-  /** TODO: add a Google Form (or similar) link for membership. Leave empty to use Facebook instead. */
+  /** SAMPLE: replace with the forum's real email address. Leave empty to hide it. */
+  email: 'bsrf@example.org',
+  /** Add a Google Form (or similar) link for membership. Leave empty to send people to Facebook. */
   joinFormUrl: '',
 };
 
 export const nav = [
   { label: 'About', href: '/#about' },
-  { label: 'What we do', href: '/#pillars' },
-  { label: 'Join', href: '/#join' },
+  { label: 'Research', href: '/#research' },
+  { label: 'Publications', href: '/publications/' },
   { label: 'Events', href: '/events/' },
   { label: 'People', href: '/#people' },
 ];
 
-/** The four pillars shown on the forum's cover banner. */
+/** The four aims shown on the forum's cover banner. */
 export const pillars = [
   {
-    id: 'research',
+    icon: 'research',
     title: 'Research',
-    short: 'Research',
-    body: 'Members design and run studies on banking, insurance and finance in Bangladesh, with faculty guiding every step.',
-    examples: ['Research design workshops', 'Data and methods clinics', 'Faculty-supervised projects'],
+    body: 'Faculty-guided studies on banking, insurance and finance in Bangladesh.',
   },
   {
-    id: 'knowledge',
+    icon: 'knowledge',
     title: 'Knowledge sharing',
-    short: 'Knowledge',
-    body: 'Seminars, reading circles and talks where members present work in progress and learn from each other.',
-    examples: ['Paper reading circles', 'Guest talks', 'Higher-study sessions'],
+    body: 'Seminars, reading circles and talks where members present work in progress.',
   },
   {
-    id: 'collaboration',
+    icon: 'network',
     title: 'Collaboration and networking',
-    short: 'Collaboration',
-    body: 'Students team up with faculty, alumni and researchers from other departments and institutions.',
-    examples: ['Mixed student–faculty teams', 'Alumni connections', 'Joint projects'],
+    body: 'Teams of students, faculty and alumni, and links with other institutions.',
   },
   {
-    id: 'innovation',
+    icon: 'innovation',
     title: 'Innovation for a better future',
-    short: 'Innovation',
-    body: 'Ideas that make financial services fairer, safer and easier to reach for more people in Bangladesh.',
-    examples: ['Policy briefs', 'Fintech ideas', 'Conference papers'],
+    body: 'Ideas that make financial services fairer, safer and easier to reach.',
+  },
+] as const;
+
+/** SAMPLE: research areas. Confirm these with the forum's advisors. */
+export const researchAreas = [
+  {
+    title: 'Banking and financial stability',
+    body: 'Capital adequacy, non-performing loans and the health of the banking sector.',
+  },
+  {
+    title: 'Insurance and risk management',
+    body: 'Life and non-life insurance markets, microinsurance and household risk.',
+  },
+  {
+    title: 'Financial inclusion',
+    body: 'Access to accounts, credit and mobile financial services for underserved people.',
+  },
+  {
+    title: 'Islamic banking and finance',
+    body: 'Shariah-based products, governance and the performance of Islamic banks.',
+  },
+  {
+    title: 'Fintech and digital payments',
+    body: 'Mobile banking, digital lending and how new financial technology is regulated.',
+  },
+  {
+    title: 'Sustainable finance',
+    body: 'Green banking, climate risk and ESG disclosure in financial institutions.',
   },
 ];
 
-/**
- * Research areas that scroll in the ticker under the hero.
- * TODO: confirm these with the forum's advisors.
- */
-export const researchAreas = [
-  'Financial inclusion',
-  'Islamic banking',
-  'Microinsurance',
-  'Digital payments',
-  'Credit risk',
-  'Climate and green finance',
-  'Bank governance',
-  'Insurance penetration',
-  'Behavioural finance',
-  'Mobile financial services',
-  'ESG reporting',
-  'Capital markets',
+/** SAMPLE: publications and working papers. */
+export type Publication = {
+  title: string;
+  authors: string;
+  type: 'Working paper' | 'Conference paper' | 'Journal article' | 'Policy brief';
+  year: number;
+  area: string;
+  url?: string;
+};
+
+export const publications: Publication[] = [
+  {
+    title: 'Determinants of non-performing loans in Bangladeshi commercial banks',
+    authors: 'BSRF banking stability group',
+    type: 'Working paper',
+    year: 2026,
+    area: 'Banking and financial stability',
+  },
+  {
+    title: 'Microinsurance uptake among rural households in Chattogram',
+    authors: 'BSRF insurance group',
+    type: 'Working paper',
+    year: 2026,
+    area: 'Insurance and risk management',
+  },
+  {
+    title: 'Mobile financial services and the saving habits of university students',
+    authors: 'BSRF financial inclusion group',
+    type: 'Conference paper',
+    year: 2026,
+    area: 'Financial inclusion',
+  },
+  {
+    title: 'Green banking disclosure in listed banks of Bangladesh',
+    authors: 'BSRF sustainable finance group',
+    type: 'Policy brief',
+    year: 2026,
+    area: 'Sustainable finance',
+  },
+  {
+    title: 'Profitability of Islamic and conventional banks: a panel study',
+    authors: 'BSRF Islamic finance group',
+    type: 'Working paper',
+    year: 2026,
+    area: 'Islamic banking and finance',
+  },
 ];
 
 /** How membership works. This is a real sequence, so it is numbered on the page. */
 export const steps = [
   {
-    title: 'Join the forum',
-    body: 'Send us a message on Facebook or talk to a committee member. Membership is open to students and faculty of the department.',
+    title: 'Apply',
+    body: 'Message us on Facebook or fill in the membership form. Open to students and faculty of the department.',
   },
   {
-    title: 'Pick a question',
-    body: 'Choose a research area that interests you and join a small team already working on it, or start a new one.',
+    title: 'Join a research group',
+    body: 'Pick an area that interests you and join a small team working on it.',
   },
   {
     title: 'Work with a mentor',
-    body: 'A faculty member guides your team through the literature, methods, data and writing.',
+    body: 'A faculty advisor guides your group through methods, data and writing.',
   },
   {
-    title: 'Share what you find',
-    body: 'Present at forum sessions, then shape your work into a paper for a conference or journal.',
+    title: 'Present and publish',
+    body: 'Share your work at forum seminars, then develop it into a paper.',
   },
 ];
 
 /**
- * People. Entries with an empty name are not shown.
- * TODO: fill in the advisors and the executive committee.
+ * SAMPLE: people. Replace names and add details.
+ * `photo` is optional: put a square photo in src/assets/people/ and import it here.
  */
-export type Person = { name: string; role: string; group: 'Advisors' | 'Executive committee' };
+export type Person = {
+  name: string;
+  role: string;
+  detail: string;
+  group: 'Advisors' | 'Executive committee';
+  photo?: ImageMetadata;
+};
 
 export const people: Person[] = [
-  { name: '', role: 'Chief Advisor', group: 'Advisors' },
-  { name: '', role: 'Advisor', group: 'Advisors' },
-  { name: '', role: 'President', group: 'Executive committee' },
-  { name: '', role: 'General Secretary', group: 'Executive committee' },
-  { name: '', role: 'Research Secretary', group: 'Executive committee' },
+  { name: 'Advisor name', role: 'Chief Advisor', detail: 'Professor, Department of Banking and Insurance', group: 'Advisors' },
+  { name: 'Advisor name', role: 'Advisor', detail: 'Associate Professor, Department of Banking and Insurance', group: 'Advisors' },
+  { name: 'Advisor name', role: 'Advisor', detail: 'Assistant Professor, Department of Banking and Insurance', group: 'Advisors' },
+  { name: 'Member name', role: 'President', detail: 'BBA, Session 2021–22', group: 'Executive committee' },
+  { name: 'Member name', role: 'Vice President', detail: 'BBA, Session 2021–22', group: 'Executive committee' },
+  { name: 'Member name', role: 'General Secretary', detail: 'BBA, Session 2022–23', group: 'Executive committee' },
+  { name: 'Member name', role: 'Research Secretary', detail: 'BBA, Session 2022–23', group: 'Executive committee' },
+  { name: 'Member name', role: 'Publication Secretary', detail: 'BBA, Session 2022–23', group: 'Executive committee' },
+  { name: 'Member name', role: 'Event Secretary', detail: 'BBA, Session 2023–24', group: 'Executive committee' },
 ];
