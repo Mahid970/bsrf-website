@@ -1,55 +1,49 @@
 ---
 import Icon from './Icon.astro';
-import { publications, researchAreas } from '../data/site';
-
-const areas = researchAreas.map((a) => ({
-  ...a,
-  count: publications.filter((p) => p.area === a.title).length,
-  href: `/publications/?area=${encodeURIComponent(a.title)}`,
-}));
+import { researchAreas } from '../data/site';
 ---
 
-<section class="container section" id="research" aria-labelledby="research-title">
-  <div class="section-head reveal">
-    <div>
-      <h2 id="research-title" class="display">Research areas</h2>
-      <p>Members work in small groups, each guided by a faculty advisor.</p>
+<section class="area-band" id="research" aria-labelledby="research-title">
+  <div class="container section">
+    <div class="section-head reveal">
+      <div>
+        <h2 id="research-title">Research areas</h2>
+        <p>Members work in small groups, each guided by a faculty advisor. Pick an area to see its publications.</p>
+      </div>
+      <a class="link" href="/publications/">All publications</a>
     </div>
-    <a class="link-grow" href="/publications/">See all publications</a>
-  </div>
 
-  <ul class="grid reveal">
-    {
-      areas.map((a) => (
-        <li>
-          <a class="row-link area" href={a.href}>
-            <span class="top">
-              <span class="name">
-                <Icon name={a.icon} size={18} />
-                <span class="display">{a.title}</span>
+    <ul class="grid">
+      {
+        researchAreas.map((a) => (
+          <li class="reveal">
+            <a class="card-link area" href={`/publications/?area=${encodeURIComponent(a.title)}`}>
+              <span class="icon-dot">
+                <Icon name={a.icon} size={20} />
               </span>
-              <span class="score count" aria-label={`${a.count} publications`}>
-                {a.count}
+              <h3>{a.title}</h3>
+              <p class="muted">{a.body}</p>
+              <span class="more">
+                View publications
+                <Icon name="chevron" size={16} />
               </span>
-            </span>
-            <span class="body muted">{a.body}</span>
-            <span class="foot">
-              <span class="muted">{a.count === 0 ? 'Research in progress' : 'See publications'}</span>
-              <span class="row-arrow">
-                <Icon name="arrow" size={16} />
-              </span>
-            </span>
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
 
 <style>
+  /* A soft band so the cards read as one set. */
+  .area-band {
+    background: var(--sunk);
+  }
+
   .grid {
     display: grid;
-    gap: 0.75rem;
+    gap: 1rem;
     list-style: none;
     padding: 0;
   }
@@ -63,6 +57,7 @@ const areas = researchAreas.map((a) => ({
   @media (min-width: 1024px) {
     .grid {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
     }
   }
 
@@ -71,56 +66,35 @@ const areas = researchAreas.map((a) => ({
     flex-direction: column;
     gap: 0.6rem;
     height: 100%;
-    padding: 1rem 1.1rem 0.9rem;
+    padding: 1.5rem 1.5rem 1.35rem;
   }
 
-  .top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
+  h3 {
+    margin-top: 0.6rem;
+    font-size: var(--text-lg);
   }
 
-  .name {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    font-size: 1.08rem;
-    line-height: 1.2;
+  p {
+    font-size: 0.975rem;
+    line-height: 1.55;
   }
 
-  .name :global(svg) {
-    flex: none;
-    margin-top: 0.1rem;
-    color: var(--brand);
-  }
-
-  .name .display {
-    font-weight: 600;
-    font-stretch: 108%;
-  }
-
-  .count {
-    font-size: 1.35rem;
-    color: var(--ink-muted);
-    transition: color 160ms var(--ease);
-  }
-
-  .area:hover .count {
-    color: var(--brand);
-  }
-
-  .body {
-    font-size: 0.9rem;
-    line-height: 1.5;
-  }
-
-  .foot {
-    display: flex;
+  .more {
+    display: inline-flex;
     align-items: center;
-    justify-content: space-between;
+    gap: 0.25rem;
     margin-top: auto;
-    padding-top: 0.25rem;
-    font-size: var(--text-xs);
+    padding-top: 0.5rem;
+    font-size: var(--text-sm);
+    font-weight: 650;
+    color: var(--brand);
+  }
+
+  .more :global(svg) {
+    transition: transform 260ms var(--ease);
+  }
+
+  .area:hover .more :global(svg) {
+    transform: translateX(4px);
   }
 </style>
