@@ -76,7 +76,7 @@ const photos = await Promise.all(
 
   {
     photos.length > 0 && (
-      <section class="gallery band" aria-labelledby="gallery-title">
+      <section class="gallery" aria-labelledby="gallery-title">
         <div class="container">
           <h2 id="gallery-title">{`Photos (${photos.length})`}</h2>
           <ul class="masonry">
@@ -113,8 +113,8 @@ const photos = await Promise.all(
 
   .cover {
     aspect-ratio: 16 / 9;
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-l);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
     overflow: hidden;
     background: var(--brand-wash);
     margin-bottom: 2.5rem;
@@ -138,8 +138,6 @@ const photos = await Promise.all(
 
   .prose :global(h2) {
     margin-top: 2em;
-    font-family: var(--font-display);
-    font-stretch: 112%;
     letter-spacing: -0.02em;
     font-size: var(--text-xl);
   }
@@ -173,10 +171,10 @@ const photos = await Promise.all(
 
   .card {
     padding: 1.5rem;
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-l);
+    border: 1px solid var(--line);
+    border-radius: var(--r);
     background: var(--surface);
-    box-shadow: 4px 4px 0 var(--amber);
+    box-shadow: var(--shadow-soft);
   }
 
   .card h2 {
@@ -190,7 +188,7 @@ const photos = await Promise.all(
     gap: 0.9rem;
     padding-bottom: 1.25rem;
     margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--line);
   }
 
   dl > div {
@@ -222,22 +220,21 @@ const photos = await Promise.all(
 
   .ask {
     font-size: 0.925rem;
-    color: var(--ink-muted);
+    color: var(--muted);
   }
 
   .ask a {
     color: var(--brand);
-    font-weight: 600;
+    font-weight: 650;
   }
 
   /* ---------- gallery ---------- */
   .gallery {
     padding-block: var(--section);
+    background: var(--sunk);
   }
 
   .gallery h2 {
-    font-family: var(--font-display);
-    font-stretch: 112%;
     letter-spacing: -0.02em;
     font-size: var(--text-3xl);
     margin-bottom: 2rem;
@@ -258,8 +255,8 @@ const photos = await Promise.all(
   .thumb {
     display: block;
     width: 100%;
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
     overflow: hidden;
     cursor: zoom-in;
     background: var(--brand-wash);
