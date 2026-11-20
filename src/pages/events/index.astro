@@ -1,168 +1,270 @@
 ---
 import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
 import { site } from '../../data/site';
-import { formatDate } from '../../utils/format';
+import { getEvents } from '../../utils/events';
+import { dateParts, formatDate, isoDate } from '../../utils/format';
 
-const events = (await getCollection('events')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const { upcoming, past } = await getEvents();
 ---
 
-<Base title="Events" description={`Sessions, workshops and news from ${site.name}.`}>
-  <section class="events container">
-    <header class="head">
-      <h1 data-reveal="words">Events and news</h1>
-      <p data-reveal="fade">
-        Sessions, workshops and news from the forum. New events are also posted on our{' '}
-        <a href={site.facebook} target="_blank" rel="noopener">Facebook page</a>.
-      </p>
-    </header>
+<Base title="Events" description={`Seminars, workshops and reading circles from ${site.name}.`}>
+  <PageHeader
+    title="Events"
+    lead="Seminars, workshops and reading circles for members and anyone interested in research on banking, insurance and finance."
+  />
 
-    <ol class="list">
+  <div class="container body">
+    <section aria-labelledby="upcoming-title">
+      <h2 id="upcoming-title">Upcoming</h2>
       {
-        events.map((e) => (
-          <li data-reveal="fade">
-            <a class="item" href={`/events/${e.id}/`}>
-              <time class="date" datetime={e.data.date.toISOString().slice(0, 10)}>
-                {formatDate(e.data.date)}
-              </time>
-              <span class="text">
-                <span class="title">{e.data.title}</span>
-                <span class="summary">{e.data.summary}</span>
-                <span class="where">{e.data.location}</span>
-              </span>
-              <span class="thumb" style={`view-transition-name: cover-${e.id}`}>
-                <Image src={e.data.cover} alt="" widths={[480, 800]} sizes="(min-width: 881px) 26rem, 92vw" />
-              </span>
-            </a>
-          </li>
-        ))
+        upcoming.length ? (
+          <ul class="list">
+            {upcoming.map((e) => {
+              const d = dateParts(e.data.date);
+              return (
+                <li class="row" data-reveal>
+                  <time class="date" datetime={isoDate(e.data.date)}>
+                    <span class="date-month">{d.month}</span>
+                    <span class="date-day">{d.day}</span>
+                  </time>
+                  <div class="text">
+                    <p class="kind">{e.data.kind}</p>
+                    <h3>
+                      <a href={`/events/${e.id}/`}>{e.data.title}</a>
+                    </h3>
+                    <p class="summary">{e.data.summary}</p>
+                    <p class="details">
+                      {e.data.time && (
+                        <span>
+                          <Icon name="clock" size={15} />
+                          {e.data.time}
+                        </span>
+                      )}
+                      <span>
+                        <Icon name="pin" size={15} />
+                        {e.data.location}
+                      </span>
+                    </p>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p class="empty">
+            No events are scheduled yet.{' '}
+            <a href={site.facebook} target="_blank" rel="noopener">Follow us on Facebook</a> to hear about the next one.
+          </p>
+        )
       }
-    </ol>
-  </section>
+    </section>
+
+    {
+      past.length > 0 && (
+        <section aria-labelledby="past-title">
+          <h2 id="past-title">Past events</h2>
+          <ul class="past">
+            {past.map((e) => (
+              <li data-reveal>
+                <a class="past-card" href={`/events/${e.id}/`}>
+                  <span class="thumb" style={`view-transition-name: cover-${e.id}`}>
+                    {e.data.cover ? (
+                      <Image src={e.data.cover} alt="" widths={[400, 640, 800]} sizes="(min-width: 900px) 360px, 92vw" />
+                    ) : (
+                      <span class="thumb-empty">
+                        <Icon name="calendar" size={32} />
+                      </span>
+                    )}
+                  </span>
+                  <span class="kind">{e.data.kind}</span>
+                  <span class="past-title">{e.data.title}</span>
+                  <span class="past-date">{formatDate(e.data.date)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+  </div>
 </Base>
 
 <style>
-  .events {
-    padding-top: 8rem;
-    padding-bottom: var(--section);
-  }
-
-  .head {
+  .body {
     display: grid;
-    gap: 1.25rem;
-    margin-bottom: clamp(3rem, 2rem + 4vw, 5rem);
+    gap: clamp(3.5rem, 3rem + 3vw, 5.5rem);
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) var(--section);
   }
 
-  h1 {
-    font-size: var(--step-5);
-    letter-spacing: -0.035em;
-  }
-
-  .head p {
-    font-size: var(--step-1);
-    color: var(--ink-soft);
-    max-width: 36rem;
-  }
-
-  .head a {
-    color: var(--blue);
+  h2 {
+    font-size: var(--step-3);
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--ink);
   }
 
   .list {
     list-style: none;
     padding: 0;
-    border-top: 2px solid var(--ink);
   }
 
-  .item {
-    display: grid;
-    grid-template-columns: 11rem minmax(0, 1fr) 26rem;
-    gap: 1.5rem 3rem;
-    align-items: center;
-    padding: 2rem 0;
+  .row {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    padding: 1.75rem 0;
     border-bottom: 1px solid var(--line);
-    text-decoration: none;
   }
 
   .date {
-    font-family: var(--font-ui);
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 4.25rem;
+    padding: 0.5rem 0 0.6rem;
+    border-radius: var(--radius-s);
+    background: var(--brand-tint);
+    color: var(--brand);
+    line-height: 1.1;
+  }
+
+  .date-month {
+    font-size: 0.85rem;
     font-weight: 600;
-    color: var(--green-ink);
-    align-self: start;
-    padding-top: 0.4rem;
+  }
+
+  .date-day {
+    font-family: var(--font-head);
+    font-size: 2rem;
+    font-weight: 600;
   }
 
   .text {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.4rem;
+    max-width: 46rem;
   }
 
-  .title {
-    font-family: var(--font-ui);
-    font-size: var(--step-4);
-    font-weight: 700;
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    transition: color 0.3s ease;
+  .kind {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--green);
   }
 
-  .item:hover .title {
-    color: var(--blue);
+  h3 {
+    font-size: var(--step-2);
+    line-height: 1.3;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    color: var(--brand);
+    text-decoration: underline;
   }
 
   .summary {
-    color: var(--ink-soft);
-    max-width: 34rem;
+    color: var(--text);
   }
 
-  .where {
-    font-family: var(--font-ui);
+  .details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
     font-size: 0.9rem;
     color: var(--muted);
   }
 
+  .details span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .empty {
+    padding: 1.5rem 0;
+    color: var(--muted);
+  }
+
+  .empty a {
+    color: var(--brand);
+  }
+
+  /* ---------- past events ---------- */
+  .past {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 2rem 1.5rem;
+    list-style: none;
+    padding: 1.75rem 0 0;
+  }
+
+  .past-card {
+    display: grid;
+    gap: 0.4rem;
+    text-decoration: none;
+  }
+
   .thumb {
     display: block;
-    aspect-ratio: 4 / 3;
-    border-radius: var(--radius-m);
+    aspect-ratio: 3 / 2;
+    margin-bottom: 0.6rem;
+    border-radius: var(--radius);
     overflow: hidden;
-    background: var(--blue-tint);
+    background: var(--brand-tint);
   }
 
   .thumb :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.9s var(--ease-out);
+    transition: transform 0.6s var(--ease-out);
   }
 
-  .item:hover .thumb :global(img) {
-    transform: scale(1.05);
+  .past-card:hover .thumb :global(img) {
+    transform: scale(1.03);
   }
 
-  @media (max-width: 1080px) {
-    .item {
-      grid-template-columns: minmax(0, 1fr) 20rem;
+  .thumb-empty {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: var(--brand);
+    opacity: 0.5;
+  }
+
+  .past-title {
+    font-family: var(--font-head);
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+
+  .past-card:hover .past-title {
+    color: var(--brand);
+  }
+
+  .past-date {
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 560px) {
+    .row {
+      gap: 1rem;
     }
 
     .date {
-      grid-column: 1 / -1;
-      padding: 0;
-    }
-  }
-
-  @media (max-width: 720px) {
-    .events {
-      padding-top: 6.5rem;
+      width: 3.5rem;
     }
 
-    .item {
-      grid-template-columns: 1fr;
-    }
-
-    .thumb {
-      order: -1;
+    .date-day {
+      font-size: 1.6rem;
     }
   }
 </style>
