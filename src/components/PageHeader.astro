@@ -1,82 +1,62 @@
 ---
-/** Title band for inner pages. */
+/** Title block for inner pages. */
 interface Props {
   title: string;
   lead?: string;
   back?: { href: string; label: string };
-  /** Short category shown above the title, e.g. the event type. */
+  /** Short label in the pill above the title, e.g. the event type. */
   kind?: string;
 }
 
 const { title, lead, back, kind } = Astro.props;
 ---
 
-<header class="page-header">
-  <div class="container inner">
-    {
-      back && (
-        <a class="back" href={back.href}>
-          {back.label}
-        </a>
-      )
-    }
-    {kind && <p class="kind">{kind}</p>}
-    <h1>{title}</h1>
-    {lead && <p class="lead">{lead}</p>}
-    <slot />
-  </div>
+<header class="page-header container">
+  {
+    back && (
+      <a class="back link-grow" href={back.href}>
+        {back.label}
+      </a>
+    )
+  }
+  {
+    kind && (
+      <p class="pill rise">
+        <span class="pill-dot" aria-hidden="true" />
+        {kind}
+      </p>
+    )
+  }
+  <h1 class="display rise" style="--i:1">{title}</h1>
+  {
+    lead && (
+      <p class="lead muted rise" style="--i:2">
+        {lead}
+      </p>
+    )
+  }
+  <slot />
 </header>
 
 <style>
   .page-header {
-    background: var(--bg-soft);
-    border-bottom: 1px solid var(--line);
-    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem);
-  }
-
-  .inner {
     display: grid;
-    gap: 1rem;
     justify-items: start;
+    gap: 1rem;
+    padding-block: clamp(2rem, 1rem + 4vw, 4rem) clamp(1.5rem, 1rem + 2vw, 2.5rem);
   }
 
   .back {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--brand);
-    text-decoration: none;
-  }
-
-  .back::before {
-    content: '';
-    width: 0.45rem;
-    height: 0.45rem;
-    border-left: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-  }
-
-  .back:hover {
-    text-decoration: underline;
-  }
-
-  .kind {
-    font-size: var(--step--1);
-    font-weight: 600;
-    color: var(--green);
+    font-size: var(--text-sm);
   }
 
   h1 {
-    font-size: var(--step-5);
-    line-height: 1.1;
     max-width: 22ch;
+    font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
   }
 
   .lead {
-    font-size: var(--step-1);
-    max-width: 42rem;
+    max-width: 44rem;
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
   }
 </style>
