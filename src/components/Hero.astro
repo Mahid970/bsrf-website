@@ -187,6 +187,22 @@ const nextDate = next ? dateParts(next.data.date) : null;
     transform: translateY(-3px);
   }
 
+  /* Phones: the card sits under the photo at full width, overlapping its edge. */
+  @media (max-width: 640px) {
+    .media {
+      padding-bottom: 0;
+    }
+
+    .next {
+      position: relative;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      max-width: none;
+      margin: -2rem 0.6rem 0;
+    }
+  }
+
   .next-text {
     display: grid;
     gap: 0.15rem;
