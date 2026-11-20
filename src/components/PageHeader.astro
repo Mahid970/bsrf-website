@@ -1,0 +1,82 @@
+---
+/** Title band for inner pages. */
+interface Props {
+  title: string;
+  lead?: string;
+  back?: { href: string; label: string };
+  /** Short category shown above the title, e.g. the event type. */
+  kind?: string;
+}
+
+const { title, lead, back, kind } = Astro.props;
+---
+
+<header class="page-header">
+  <div class="container inner">
+    {
+      back && (
+        <a class="back" href={back.href}>
+          {back.label}
+        </a>
+      )
+    }
+    {kind && <p class="kind">{kind}</p>}
+    <h1>{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  .page-header {
+    background: var(--bg-soft);
+    border-bottom: 1px solid var(--line);
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .inner {
+    display: grid;
+    gap: 1rem;
+    justify-items: start;
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--brand);
+    text-decoration: none;
+  }
+
+  .back::before {
+    content: '';
+    width: 0.45rem;
+    height: 0.45rem;
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+  }
+
+  .back:hover {
+    text-decoration: underline;
+  }
+
+  .kind {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--green);
+  }
+
+  h1 {
+    font-size: var(--step-5);
+    line-height: 1.1;
+    max-width: 22ch;
+  }
+
+  .lead {
+    font-size: var(--step-1);
+    max-width: 42rem;
+  }
+</style>
