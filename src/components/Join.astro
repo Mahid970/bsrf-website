@@ -139,6 +139,10 @@ const applyLabel = site.joinFormUrl ? 'Fill in the membership form' : 'Apply on 
   }
 
   @media (max-width: 560px) {
+    .actions {
+      flex-direction: column;
+    }
+
     .steps {
       grid-template-columns: 1fr;
       gap: 1.75rem;
