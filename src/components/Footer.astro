@@ -1,31 +1,26 @@
 ---
 import { Image } from 'astro:assets';
 import mark from '../assets/brand/bsrf-mark.png';
+import Icon from './Icon.astro';
 import { nav, site } from '../data/site';
 
-const words = site.tagline.split(' ');
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer" id="contact">
   <div class="container">
-    <p class="tagline" aria-label={site.tagline} data-tagline>
-      {
-        words.map((w) => (
-          <span class="tw" aria-hidden="true">
-            <span class="tw-inner">{w}</span>
-          </span>
-        ))
-      }
-    </p>
-
     <div class="cols">
-      <div class="col brand">
-        <Image src={mark} alt="" width={64} height={64} densities={[1, 2]} class="mark" />
-        <p>
-          <strong>{site.name}</strong>
-          <span>{site.department}, {site.university}</span>
-        </p>
+      <div class="brand">
+        <a class="lockup" href="/">
+          <span class="mark-wrap">
+            <Image src={mark} alt="" width={44} height={44} densities={[1, 2]} />
+          </span>
+          <span class="lockup-text">
+            <span class="lockup-name">{site.name}</span>
+            <span class="lockup-sub">{site.university}</span>
+          </span>
+        </a>
+        <p>{`A research platform of faculty members and students of the ${site.department}.`}</p>
       </div>
 
       <div class="col">
@@ -35,15 +30,11 @@ const year = new Date().getFullYear();
           <br />
           {site.faculty}
           <br />
-          {site.university}, {site.city}
+          {site.university}
+          <br />
+          {site.city}
         </address>
         <a href={site.mapUrl} target="_blank" rel="noopener">Open in Google Maps</a>
-      </div>
-
-      <div class="col">
-        <h2>Follow</h2>
-        <a href={site.facebook} target="_blank" rel="noopener">Facebook page</a>
-        {site.email && <a href={`mailto:${site.email}`}>{site.email}</a>}
       </div>
 
       <div class="col">
@@ -58,153 +49,160 @@ const year = new Date().getFullYear();
           }
         </ul>
       </div>
+
+      <div class="col">
+        <h2>Connect</h2>
+        <ul>
+          <li>
+            <a class="with-icon" href={site.facebook} target="_blank" rel="noopener">
+              <Icon name="facebook" size={18} />
+              Facebook
+            </a>
+          </li>
+          {
+            site.email && (
+              <li>
+                <a class="with-icon" href={`mailto:${site.email}`}>
+                  <Icon name="mail" size={18} />
+                  {site.email}
+                </a>
+              </li>
+            )
+          }
+        </ul>
+      </div>
     </div>
 
     <div class="base">
-      <p>© {year} {site.name}</p>
-      <a href="#main" class="top" data-to-top>Back to top</a>
+      <p>{`© ${year} ${site.name}`}</p>
+      <p>{site.tagline}</p>
     </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    background: var(--blue);
-    color: #fff;
-    padding-top: clamp(4rem, 3rem + 6vw, 8rem);
-    border-radius: var(--radius-l) var(--radius-l) 0 0;
-    font-family: var(--font-ui);
-    overflow: hidden;
-  }
-
-  .tagline {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0 0.28em;
-    font-size: clamp(3rem, 1rem + 9.5vw, 10.5rem);
-    font-weight: 800;
-    line-height: 0.92;
-    letter-spacing: -0.045em;
-    margin-bottom: clamp(3rem, 2rem + 5vw, 6.5rem);
-  }
-
-  .tw {
-    display: inline-block;
-    overflow: clip;
-    padding-bottom: 0.08em;
-  }
-
-  .tw-inner {
-    display: inline-block;
-  }
-
-  .tw:nth-child(2) .tw-inner {
-    color: var(--green);
-  }
-
-  .tw:nth-child(3) .tw-inner {
-    color: #c9c6ff;
+    background: var(--navy);
+    color: var(--on-navy-muted);
+    font-size: 0.95rem;
+    border-top: 1px solid var(--navy-line);
   }
 
   .cols {
     display: grid;
-    grid-template-columns: 1.4fr 1.2fr 0.8fr 0.8fr;
-    gap: 2.5rem 2rem;
-    padding-bottom: 3rem;
+    grid-template-columns: minmax(0, 1.6fr) repeat(3, minmax(0, 1fr));
+    gap: 2.5rem;
+    padding-block: clamp(3rem, 2rem + 3vw, 4.5rem);
+  }
+
+  .brand {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    max-width: 22rem;
+  }
+
+  .lockup {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+  }
+
+  .mark-wrap {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: var(--radius-s);
+    background: #fff;
+  }
+
+  .mark-wrap :global(img) {
+    width: 44px;
+    height: 44px;
+  }
+
+  .lockup-text {
+    display: grid;
+    line-height: 1.25;
+  }
+
+  .lockup-name {
+    font-family: var(--font-head);
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .lockup-sub {
+    font-size: 0.8125rem;
+  }
+
+  h2 {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: #fff;
+    margin-bottom: 1rem;
   }
 
   .col {
     display: grid;
     align-content: start;
-    gap: 0.6rem;
-    font-size: 1rem;
-  }
-
-  .col h2 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #c9c6ff;
-    letter-spacing: 0;
-    margin-bottom: 0.25rem;
-  }
-
-  .col a {
-    color: #fff;
-    text-decoration-color: rgb(255 255 255 / 0.4);
-    transition: text-decoration-color 0.2s ease;
-  }
-
-  .col a:hover {
-    text-decoration-color: #fff;
-  }
-
-  .col ul {
-    list-style: none;
-    padding: 0;
-    display: grid;
-    gap: 0.45rem;
-  }
-
-  .col ul a {
-    text-decoration: none;
-  }
-
-  .col ul a:hover {
-    text-decoration: underline;
+    gap: 0.75rem;
   }
 
   address {
     font-style: normal;
-    line-height: 1.5;
+    line-height: 1.6;
   }
 
-  .brand {
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-    align-items: start;
-  }
-
-  .mark {
-    width: 64px;
-    height: 64px;
-    padding: 6px;
-    background: #fff;
-    border-radius: 16px;
-  }
-
-  .brand p {
+  ul {
     display: grid;
-    gap: 0.3rem;
-    line-height: 1.35;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
   }
 
-  .brand span {
-    color: #c9c6ff;
-    font-size: 0.95rem;
+  a {
+    color: var(--on-navy);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  .lockup:hover {
+    text-decoration: none;
+  }
+
+  .with-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .base {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 1rem;
+    gap: 0.5rem 2rem;
     padding: 1.5rem 0 2rem;
-    border-top: 1px solid rgb(255 255 255 / 0.2);
-    font-size: 0.9rem;
-    color: #c9c6ff;
-  }
-
-  .top {
-    color: #fff;
+    border-top: 1px solid var(--navy-line);
+    font-size: 0.85rem;
   }
 
   .footer :global(:focus-visible) {
     outline-color: #fff;
   }
 
-  @media (max-width: 960px) {
+  @media (max-width: 980px) {
     .cols {
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .brand {
@@ -212,31 +210,9 @@ const year = new Date().getFullYear();
     }
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 600px) {
     .cols {
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
     }
   }
 </style>
-
-<script>
-  import { gsap, lenis, reduceMotion } from '../scripts/motion';
-
-  const tagline = document.querySelector<HTMLElement>('[data-tagline]');
-  if (tagline && !reduceMotion) {
-    gsap.from(tagline.querySelectorAll('.tw-inner'), {
-      yPercent: 105,
-      rotate: 4,
-      duration: 1.3,
-      ease: 'expo.out',
-      stagger: 0.12,
-      scrollTrigger: { trigger: tagline, start: 'top 85%', once: true },
-    });
-  }
-
-  document.querySelector('[data-to-top]')?.addEventListener('click', (e) => {
-    if (!lenis) return;
-    e.preventDefault();
-    lenis.scrollTo(0, { duration: 1.6 });
-  });
-</script>
