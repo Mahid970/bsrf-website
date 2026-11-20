@@ -567,11 +567,12 @@ p {
   }
 }
 
-/* The single page-load moment. */
+/* The single page-load moment. Starts faint rather than invisible, so a page
+   whose animations are paused (a background tab, a preview) is never blank. */
 @keyframes rise-in {
   from {
-    opacity: 0;
-    translate: 0 14px;
+    opacity: 0.3;
+    translate: 0 12px;
   }
 }
 
