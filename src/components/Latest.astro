@@ -6,75 +6,53 @@ import { dateParts, isoDate } from '../utils/format';
 
 const recent = publications.slice(0, 4);
 const { upcoming } = await getEvents();
-const soon = upcoming.slice(0, 3);
+const soon = upcoming.slice(0, 4);
 ---
 
-<section class="band" aria-label="Latest from the forum">
-  <div class="container section grid">
-    <div class="col reveal">
-      <div class="col-head">
-        <h2 class="display">Recent publications</h2>
-        <a class="link-grow" href="/publications/">All publications</a>
-      </div>
-      <ul class="rows">
-        {
-          recent.map((p) => {
-            const inner = (
-              <>
-                <span class="pub-text">
-                  <span class="meta">
-                    <span class="tag">{p.type}</span>
-                    <span class="muted">{p.area}</span>
-                  </span>
-                  <span class="pub-title">{p.title}</span>
-                  <span class="muted by">{p.authors}</span>
-                </span>
-                <span class="score year">{p.year}</span>
-              </>
-            );
-            return (
-              <li>
-                {p.url ? (
-                  <a class="row-link pub" href={p.url}>
-                    {inner}
-                  </a>
-                ) : (
-                  <div class="panel pub">{inner}</div>
-                )}
-              </li>
-            );
-          })
-        }
-      </ul>
+<section class="container section" aria-labelledby="latest-title">
+  <div class="section-head reveal">
+    <div>
+      <h2 id="latest-title">What’s happening</h2>
+      <p>Upcoming sessions and the latest work from forum members.</p>
     </div>
+    <div class="tabs" role="tablist" aria-label="Show" data-tabs>
+      <button type="button" class="tab" role="tab" id="tab-events" aria-controls="panel-events" aria-selected="true">Upcoming events</button>
+      <button type="button" class="tab" role="tab" id="tab-pubs" aria-controls="panel-pubs" aria-selected="false" tabindex="-1">Publications</button>
+    </div>
+  </div>
 
-    <div class="col reveal">
-      <div class="col-head">
-        <h2 class="display">Upcoming events</h2>
-        <a class="link-grow" href="/events/">All events</a>
-      </div>
+  <div class="card board reveal">
+    <div class="panel" id="panel-events" role="tabpanel" aria-labelledby="tab-events">
       {
         soon.length ? (
-          <ul class="rows">
+          <ul class="list">
             {soon.map((e) => {
               const d = dateParts(e.data.date);
               return (
                 <li>
-                  <a class="row-link event" href={`/events/${e.id}/`}>
-                    <time class="date-tile" datetime={isoDate(e.data.date)}>
-                      <span class="month">{d.month}</span>
-                      <span class="day score">{d.day}</span>
+                  <a class="item" href={`/events/${e.id}/`}>
+                    <time class="cal" datetime={isoDate(e.data.date)}>
+                      <span class="m">{d.month}</span>
+                      <span class="d">{d.day}</span>
                     </time>
-                    <span class="event-text">
-                      <span class="tag">{e.data.kind}</span>
-                      <span class="event-title">{e.data.title}</span>
-                      <span class="detail muted">
-                        <Icon name="pin" size={14} />
-                        {e.data.location}
+                    <span class="body">
+                      <span class="chip">{e.data.kind}</span>
+                      <span class="title">{e.data.title}</span>
+                      <span class="meta muted">
+                        {e.data.time && (
+                          <span>
+                            <Icon name="clock" size={15} />
+                            {e.data.time}
+                          </span>
+                        )}
+                        <span>
+                          <Icon name="pin" size={15} />
+                          {e.data.location}
+                        </span>
                       </span>
                     </span>
-                    <span class="row-arrow">
-                      <Icon name="arrow" size={18} />
+                    <span class="go" aria-hidden="true">
+                      <Icon name="chevron" size={18} />
                     </span>
                   </a>
                 </li>
@@ -82,123 +60,194 @@ const soon = upcoming.slice(0, 3);
             })}
           </ul>
         ) : (
-          <p class="panel empty muted">No events are scheduled yet. Follow the forum on Facebook to hear about the next one first.</p>
+          <p class="empty muted">No events are scheduled yet. Follow the forum on Facebook to hear about the next one first.</p>
         )
       }
+      <p class="foot"><a class="link" href="/events/">See all events</a></p>
+    </div>
+
+    <div class="panel" id="panel-pubs" role="tabpanel" aria-labelledby="tab-pubs" hidden>
+      <ul class="list">
+        {
+          recent.map((p) => (
+            <li>
+              <div class="item static">
+                <span class="year" aria-hidden="true">
+                  <Icon name="document" size={20} />
+                </span>
+                <span class="body">
+                  <span class="chips">
+                    <span class="chip">{p.type}</span>
+                    <span class="chip chip-neutral">{p.year}</span>
+                  </span>
+                  <span class="title">{p.url ? <a class="link plain" href={p.url}>{p.title}</a> : p.title}</span>
+                  <span class="meta muted">
+                    <span>{p.authors}</span>
+                    <span>{p.area}</span>
+                  </span>
+                </span>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="foot"><a class="link" href="/publications/">See all publications</a></p>
     </div>
   </div>
 </section>
 
 <style>
-  .grid {
-    display: grid;
-    gap: 3rem;
+  .board {
+    overflow: hidden;
   }
 
-  @media (min-width: 1024px) {
-    .grid {
-      grid-template-columns: 7fr 5fr;
-      gap: 3rem;
-    }
-  }
-
-  .col-head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .col-head h2 {
-    font-size: var(--text-2xl);
-  }
-
-  .col-head .link-grow {
-    font-size: var(--text-sm);
-  }
-
-  .rows {
-    display: grid;
-    gap: 0.6rem;
+  .list {
     list-style: none;
     padding: 0;
   }
 
-  /* ---------- publications ---------- */
-  .pub {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    padding: 1rem 1.1rem;
-    border-radius: var(--radius);
+  .list li + li {
+    border-top: 1px solid var(--line);
   }
 
-  .pub-text {
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    padding: 1.15rem clamp(1rem, 0.5rem + 2vw, 1.75rem);
+    transition: background-color 220ms var(--ease);
+  }
+
+  a.item:hover {
+    background: color-mix(in srgb, var(--brand-wash) 60%, transparent);
+  }
+
+  .body {
     display: grid;
+    justify-items: start;
     gap: 0.35rem;
     flex: 1;
     min-width: 0;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .title {
+    font-size: 1.08rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .plain {
+    color: inherit;
   }
 
   .meta {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 0.35rem 0.75rem;
-    font-size: var(--text-xs);
-  }
-
-  .pub-title {
-    font-weight: 600;
-    font-size: 1.05rem;
-    line-height: 1.35;
-  }
-
-  .by {
+    gap: 0.25rem 1.25rem;
     font-size: var(--text-sm);
+  }
+
+  .meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .go {
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    transition:
+      background-color 220ms var(--ease),
+      border-color 220ms var(--ease),
+      color 220ms var(--ease),
+      transform 260ms var(--ease);
+  }
+
+  a.item:hover .go {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: #fff;
+    transform: translateX(3px);
   }
 
   .year {
-    font-size: 1.15rem;
-    color: var(--ink-muted);
-  }
-
-  /* ---------- events ---------- */
-  .event {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.85rem 1rem 0.85rem 0.85rem;
-  }
-
-  .event-text {
     display: grid;
-    justify-items: start;
-    gap: 0.3rem;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .event-title {
-    font-weight: 600;
-    line-height: 1.3;
-  }
-
-  .detail {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.35rem;
-    font-size: var(--text-sm);
-    line-height: 1.4;
-  }
-
-  .detail :global(svg) {
-    flex: none;
-    margin-top: 0.15rem;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    flex-shrink: 0;
+    border-radius: 14px;
+    background: var(--brand-wash);
+    color: var(--brand);
   }
 
   .empty {
-    padding: 1.25rem;
+    padding: 1.5rem clamp(1rem, 0.5rem + 2vw, 1.75rem);
+  }
+
+  .foot {
+    padding: 1rem clamp(1rem, 0.5rem + 2vw, 1.75rem);
+    border-top: 1px solid var(--line);
+    background: color-mix(in srgb, var(--sunk) 50%, transparent);
+    font-size: var(--text-sm);
+  }
+
+  .panel:not([hidden]) {
+    animation: panel-in 360ms var(--ease);
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .go {
+      display: none;
+    }
+
+    .year {
+      display: none;
+    }
   }
 </style>
+
+<script>
+  // Accessible tabs: click or use the arrow keys to switch panels.
+  const list = document.querySelector<HTMLElement>('[data-tabs]');
+  if (list) {
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const select = (tab: HTMLButtonElement) => {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !on;
+      });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t));
+      t.addEventListener('keydown', (e) => {
+        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
+        select(next);
+        next.focus();
+      });
+    });
+  }
+</script>
