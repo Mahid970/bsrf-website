@@ -199,11 +199,11 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
   }
 
   /* ---------- next event card ---------- */
+  /* Sits under the mosaic, overlapping only its bottom edge so no photo is covered. */
   .next {
-    position: absolute;
-    left: clamp(-2.5rem, -3vw, -1rem);
-    bottom: clamp(-2rem, -2.5vw, -1rem);
-    width: min(23rem, 72%);
+    position: relative;
+    margin: -1.75rem 0 0 clamp(-2.5rem, -3vw, -1rem);
+    width: min(24rem, 80%);
     display: grid;
     gap: 0.75rem;
     padding: 1.1rem 1.25rem 1.25rem;
@@ -294,11 +294,8 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
     }
 
     .next {
-      position: relative;
-      left: auto;
-      bottom: auto;
       width: auto;
-      margin: -2.5rem 1rem 0;
+      margin: -1.75rem 1rem 0;
     }
   }
 
