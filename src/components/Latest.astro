@@ -9,69 +9,80 @@ const { upcoming } = await getEvents();
 const soon = upcoming.slice(0, 3);
 ---
 
-<section class="section latest" aria-label="Latest from the forum">
-  <div class="container grid">
-    <div class="col">
+<section class="band" aria-label="Latest from the forum">
+  <div class="container section grid">
+    <div class="col reveal">
       <div class="col-head">
-        <h2 data-reveal>Recent publications</h2>
-        <a class="text-link" href="/publications/" data-reveal>All publications</a>
+        <h2 class="display">Recent publications</h2>
+        <a class="link-grow" href="/publications/">All publications</a>
       </div>
-      <ul class="pubs">
+      <ul class="rows">
         {
-          recent.map((p) => (
-            <li data-reveal>
-              <p class="meta">
-                <span class="type">{p.type}</span>
-                <span>{p.year}</span>
-              </p>
-              <h3>{p.url ? <a href={p.url}>{p.title}</a> : p.title}</h3>
-              <p class="by">{p.authors}</p>
-            </li>
-          ))
+          recent.map((p) => {
+            const inner = (
+              <>
+                <span class="pub-text">
+                  <span class="meta">
+                    <span class="tag">{p.type}</span>
+                    <span class="muted">{p.area}</span>
+                  </span>
+                  <span class="pub-title">{p.title}</span>
+                  <span class="muted by">{p.authors}</span>
+                </span>
+                <span class="score year">{p.year}</span>
+              </>
+            );
+            return (
+              <li>
+                {p.url ? (
+                  <a class="row-link pub" href={p.url}>
+                    {inner}
+                  </a>
+                ) : (
+                  <div class="panel pub">{inner}</div>
+                )}
+              </li>
+            );
+          })
         }
       </ul>
     </div>
 
-    <div class="col">
+    <div class="col reveal">
       <div class="col-head">
-        <h2 data-reveal>Upcoming events</h2>
-        <a class="text-link" href="/events/" data-reveal>All events</a>
+        <h2 class="display">Upcoming events</h2>
+        <a class="link-grow" href="/events/">All events</a>
       </div>
       {
         soon.length ? (
-          <ul class="events">
+          <ul class="rows">
             {soon.map((e) => {
               const d = dateParts(e.data.date);
               return (
-                <li data-reveal>
-                  <time class="date" datetime={isoDate(e.data.date)}>
-                    <span class="date-month">{d.month}</span>
-                    <span class="date-day">{d.day}</span>
-                  </time>
-                  <div class="event-text">
-                    <p class="kind">{e.data.kind}</p>
-                    <h3>
-                      <a href={`/events/${e.id}/`}>{e.data.title}</a>
-                    </h3>
-                    {e.data.time && (
-                      <p class="detail">
-                        <Icon name="clock" size={15} />
-                        {e.data.time}
-                      </p>
-                    )}
-                    <p class="detail">
-                      <Icon name="pin" size={15} />
-                      {e.data.location}
-                    </p>
-                  </div>
+                <li>
+                  <a class="row-link event" href={`/events/${e.id}/`}>
+                    <time class="date-tile" datetime={isoDate(e.data.date)}>
+                      <span class="month">{d.month}</span>
+                      <span class="day score">{d.day}</span>
+                    </time>
+                    <span class="event-text">
+                      <span class="tag">{e.data.kind}</span>
+                      <span class="event-title">{e.data.title}</span>
+                      <span class="detail muted">
+                        <Icon name="pin" size={14} />
+                        {e.data.location}
+                      </span>
+                    </span>
+                    <span class="row-arrow">
+                      <Icon name="arrow" size={18} />
+                    </span>
+                  </a>
                 </li>
               );
             })}
           </ul>
         ) : (
-          <p class="empty">
-            No events are scheduled yet. Follow the forum on Facebook to hear about the next one first.
-          </p>
+          <p class="panel empty muted">No events are scheduled yet. Follow the forum on Facebook to hear about the next one first.</p>
         )
       }
     </div>
@@ -81,8 +92,14 @@ const soon = upcoming.slice(0, 3);
 <style>
   .grid {
     display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(3rem, 6vw, 6rem);
+    gap: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: 7fr 5fr;
+      gap: 3rem;
+    }
   }
 
   .col-head {
@@ -90,135 +107,98 @@ const soon = upcoming.slice(0, 3);
     align-items: baseline;
     justify-content: space-between;
     gap: 1rem;
-    padding-bottom: 1.25rem;
-    border-bottom: 2px solid var(--ink);
+    margin-bottom: 1.25rem;
   }
 
   .col-head h2 {
-    font-size: var(--step-3);
+    font-size: var(--text-2xl);
   }
 
-  .col-head .text-link {
-    font-size: 0.95rem;
+  .col-head .link-grow {
+    font-size: var(--text-sm);
   }
 
-  ul {
+  .rows {
+    display: grid;
+    gap: 0.6rem;
     list-style: none;
     padding: 0;
   }
 
-  li {
-    padding: 1.5rem 0;
-    border-bottom: 1px solid var(--line);
+  /* ---------- publications ---------- */
+  .pub {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius);
   }
 
-  /* ---------- publications ---------- */
+  .pub-text {
+    display: grid;
+    gap: 0.35rem;
+    flex: 1;
+    min-width: 0;
+  }
+
   .meta {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 0.4rem;
-    font-size: var(--step--1);
-    color: var(--muted);
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem 0.75rem;
+    font-size: var(--text-xs);
   }
 
-  .type {
+  .pub-title {
     font-weight: 600;
-    color: var(--green);
-  }
-
-  .pubs h3 {
-    font-size: var(--step-2);
-    line-height: 1.3;
-    margin-bottom: 0.35rem;
-  }
-
-  h3 a {
-    text-decoration: none;
-    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
-    transition:
-      background-size 0.3s var(--ease-out),
-      color 0.2s ease;
-  }
-
-  h3 a:hover {
-    color: var(--brand);
-    background-size: 100% 1px;
+    font-size: 1.05rem;
+    line-height: 1.35;
   }
 
   .by {
-    font-size: 0.95rem;
-    color: var(--muted);
+    font-size: var(--text-sm);
+  }
+
+  .year {
+    font-size: 1.15rem;
+    color: var(--ink-muted);
   }
 
   /* ---------- events ---------- */
-  .events li {
+  .event {
     display: flex;
-    gap: 1.25rem;
-    align-items: flex-start;
-  }
-
-  .date {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 3.75rem;
-    padding: 0.45rem 0 0.55rem;
-    border-radius: var(--radius-s);
-    background: var(--brand-tint);
-    color: var(--brand);
-    line-height: 1.1;
-  }
-
-  .date-month {
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
-  .date-day {
-    font-family: var(--font-head);
-    font-size: 1.7rem;
-    font-weight: 600;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.85rem 1rem 0.85rem 0.85rem;
   }
 
   .event-text {
     display: grid;
+    justify-items: start;
     gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
   }
 
-  .kind {
-    font-size: var(--step--1);
+  .event-title {
     font-weight: 600;
-    color: var(--green);
-  }
-
-  .events h3 {
-    font-size: 1.15rem;
-    line-height: 1.35;
-    margin-bottom: 0.2rem;
+    line-height: 1.3;
   }
 
   .detail {
     display: flex;
-    gap: 0.4rem;
     align-items: flex-start;
-    font-size: 0.9rem;
-    line-height: 1.45;
-    color: var(--muted);
+    gap: 0.35rem;
+    font-size: var(--text-sm);
+    line-height: 1.4;
   }
 
   .detail :global(svg) {
     flex: none;
-    margin-top: 0.12rem;
+    margin-top: 0.15rem;
   }
 
   .empty {
-    padding: 1.5rem 0;
-    color: var(--muted);
-  }
-
-  @media (max-width: 980px) {
-    .grid {
-      grid-template-columns: 1fr;
-    }
+    padding: 1.25rem;
   }
 </style>
