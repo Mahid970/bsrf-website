@@ -6,24 +6,14 @@ export default defineConfig({
   // Public URL of the deployed site (used for canonical links and social cards).
   site: 'https://bsrf-website.mmahidujjaman.workers.dev',
 
-  // Fonts are downloaded at build time and served from this site (no Google requests at runtime).
+  // Text face, downloaded at build time and served from this site.
+  // Archivo (headings and figures) comes from @fontsource-variable/archivo so its width axis is available.
   fonts: [
     {
-      // Headings: an academic, journal-like serif.
       provider: fontProviders.fontsource(),
-      name: 'Source Serif 4',
-      cssVariable: '--font-serif',
-      weights: ['400 700'],
-      styles: ['normal', 'italic'],
-      subsets: ['latin'],
-      fallbacks: ['Georgia', 'serif'],
-    },
-    {
-      // Body text and interface: precise, finance/data-flavoured sans.
-      provider: fontProviders.fontsource(),
-      name: 'IBM Plex Sans',
+      name: 'Instrument Sans',
       cssVariable: '--font-sans',
-      weights: ['400', '500', '600'],
+      weights: ['400 700'],
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],
