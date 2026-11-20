@@ -13,14 +13,14 @@ const picks = await Promise.all(
 );
 ---
 
-<section class="band" id="gallery" aria-labelledby="gallery-title">
+<section id="gallery" aria-labelledby="gallery-title">
   <div class="container section">
     <div class="section-head reveal">
       <div>
-        <h2 id="gallery-title" class="display">From the launch</h2>
+        <h2 id="gallery-title">From the launch</h2>
         <p>{`${site.foundedLabel}, ${site.firstVenue}, ${site.department}.`}</p>
       </div>
-      <a class="link-grow" href="/events/forum-launch/">{`See all ${all.length} photos`}</a>
+      <a class="link" href="/events/forum-launch/">{`See all ${all.length} photos`}</a>
     </div>
 
     <ul class="grid reveal">
@@ -67,20 +67,17 @@ const picks = await Promise.all(
   }
 
   li {
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius-l);
+    border-radius: var(--r);
     overflow: hidden;
-    background: var(--surface-sunk);
+    background: var(--sunk);
     transition:
-      border-color 200ms var(--ease),
-      box-shadow 260ms var(--ease),
-      translate 260ms var(--ease);
+      transform 360ms var(--ease),
+      box-shadow 360ms var(--ease);
   }
 
   li:hover {
-    border-color: var(--brand);
-    box-shadow: 4px 4px 0 var(--brand);
-    translate: -2px -2px;
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-soft);
   }
 
   .open {
@@ -112,7 +109,7 @@ const picks = await Promise.all(
     font-weight: 500;
     text-align: left;
     color: #fff;
-    background: linear-gradient(to top, rgb(12 13 19 / 0.75), transparent);
+    background: linear-gradient(to top, rgb(14 17 66 / 0.8), transparent);
     opacity: 0;
     transform: translateY(6px);
     transition:
