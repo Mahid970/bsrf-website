@@ -16,9 +16,6 @@ const nextDate = next ? dateParts(next.data.date) : null;
 
 <section class="hero container" aria-labelledby="hero-title">
   <div class="panel">
-    <!-- The logo's rising bars, very faint, in the corner of the panel. -->
-    <span class="deco" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-
     <div class="grid">
       <div class="copy">
         <p class="kicker enter">
@@ -95,42 +92,6 @@ const nextDate = next ? dateParts(next.data.date) : null;
     color: var(--on-navy);
   }
 
-  .deco {
-    position: absolute;
-    right: clamp(-2rem, -2vw, -1rem);
-    bottom: 4.5rem;
-    z-index: -1;
-    display: flex;
-    align-items: flex-end;
-    gap: 1.1rem;
-    height: 70%;
-    opacity: 0.07;
-    pointer-events: none;
-  }
-
-  .deco i {
-    display: block;
-    width: 3.2rem;
-    border-radius: 8px 8px 0 0;
-    background: #fff;
-  }
-
-  .deco i:nth-child(1) {
-    height: 40%;
-  }
-
-  .deco i:nth-child(2) {
-    height: 58%;
-  }
-
-  .deco i:nth-child(3) {
-    height: 78%;
-  }
-
-  .deco i:nth-child(4) {
-    height: 100%;
-  }
-
   .grid {
     display: grid;
     gap: 2.5rem;
@@ -150,9 +111,9 @@ const nextDate = next ? dateParts(next.data.date) : null;
 
   h1 {
     margin-top: 1.1rem;
-    font-size: var(--text-3xl);
+    font-size: clamp(2.4rem, 1.5rem + 3vw, 3.5rem);
     font-weight: 800;
-    line-height: 1.02;
+    line-height: 1.04;
     letter-spacing: -0.035em;
     color: #fff;
   }
