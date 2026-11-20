@@ -2,38 +2,38 @@
 
 Official website of the **BankSure Scientific Research Forum (BSRF)**, a research platform of faculty members and students of the Department of Banking and Insurance, University of Chittagong.
 
-Built with [Astro](https://astro.build) as a fully static site, with [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for motion, and hosted for free on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/).
+Built with [Astro](https://astro.build) as a fully static site, with [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for smooth scrolling and light motion, and hosted for free on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/). Type is Source Serif 4 (headings) and IBM Plex Sans (text), self-hosted at build time.
 
 ## Editing content
 
 You don't need to touch any component to update the site. Almost everything lives in two places.
 
-### 1. `src/data/site.ts`
+Entries marked `SAMPLE` are dummy content that shows how the design looks when filled in. Search for `SAMPLE` to find them all and replace them with real details.
 
-Names, links and section text:
+### 1. `src/data/site.ts`
 
 | What | Field |
 | --- | --- |
 | Email address (hidden while empty) | `site.email` |
-| Membership form link (the Join button uses Facebook while empty) | `site.joinFormUrl` |
-| The four pillars | `pillars` |
-| Topics in the scrolling ticker | `researchAreas` |
+| Membership form link (the apply button uses Facebook while empty) | `site.joinFormUrl` |
+| The four aims shown under About | `pillars` |
+| Research areas | `researchAreas` |
+| Publications (home page and Publications page) | `publications` |
 | Membership steps | `steps` |
-| Advisors and committee | `people` |
+| Advisors and executive committee | `people` |
 
-Search the file for `TODO` to find every placeholder. People with an empty `name` are not shown, so the People section fills in automatically as you add names.
+To show a photo for a person, put a square image in `src/assets/people/`, import it at the top of `site.ts`, and set it as that person's `photo`.
 
 ### 2. `src/content/events/`
 
-Each event is one Markdown file. To add an event:
+Each event is one Markdown file, and the file name becomes its address (`/events/<file-name>/`). To add one, copy an existing file and edit the frontmatter:
 
-1. Put its photos in `src/assets/photos/` (JPG, up to about 2000px wide is plenty; the site makes smaller copies automatically).
-2. Copy `forum-launch.md` to a new file, for example `research-workshop-1.md`. The file name becomes the page address: `/events/research-workshop-1/`.
-3. Edit the frontmatter (`title`, `date`, `location`, `summary`, `cover`, `coverAlt`, `gallery`) and write the story below it.
+- `title`, `kind` (Seminar, Workshop, Reading circle...), `date`, `time`, `location`, `summary`
+- `cover` and `gallery` are optional. Put photos in `src/assets/photos/` and refer to them with paths like `../../assets/photos/my-photo.jpg`.
 
-The events page lists events newest first.
+Events dated today or later appear as upcoming, older ones as past. Because the site is static, that split is decided when the site is built, so redeploy after an event has taken place.
 
-Which launch photos appear on the home page is set by `homePicks` in `src/data/photos.ts`.
+Which launch photos appear in the home page gallery is set by `homePicks` in `src/data/photos.ts`.
 
 ## Working on the site
 
@@ -62,13 +62,15 @@ To deploy automatically on every push to `main`, connect this repository in the 
 ```
 src/
   assets/       logo mark, cover banner and photos (optimized at build time)
-  components/   one file per section (Hero, Ticker, About, Pillars, Steps, LaunchReel, People, Footer, Lightbox)
+  components/   Header, Hero, About, ResearchAreas, Latest, Gallery, People, Join, Footer,
+                PageHeader, Lightbox, Icon
   content/      events as Markdown
-  data/         site.ts (content) and photos.ts (home page photo picks)
+  data/         site.ts (content) and photos.ts (home gallery picks)
   layouts/      Base.astro: page shell, SEO tags, fonts
-  pages/        home, events list, event pages, 404
-  scripts/      motion.ts: smooth scroll and scroll-reveal helpers
-  styles/       global.css: colour, type and spacing tokens
+  pages/        home, events list, event pages, publications, 404
+  scripts/      motion.ts: smooth scroll and scroll reveals
+  styles/       global.css: colour, type, spacing and button styles
+  utils/        date formatting and upcoming/past event helpers
 ```
 
 Motion respects the visitor's "reduce motion" setting: smooth scrolling and animations are switched off and content is shown in its final state.
