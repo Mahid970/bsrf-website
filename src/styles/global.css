@@ -1,46 +1,46 @@
 /* ==========================================================================
    BSRF design tokens
-   Palette is drawn from the forum logo: ultramarine "B", navy bars, mint swoosh.
+   Calm, institutional system. Colours come from the logo: indigo ink,
+   ultramarine for actions, green for small markers only.
    ========================================================================== */
 
 :root {
   /* colour */
-  --ink: #0f0d45;          /* navy from the logo bars: headings, body text */
-  --ink-soft: #3b3e6b;     /* long-form reading text */
-  --muted: #565a80;        /* secondary text (5.9:1 on paper) */
-  --blue: #2316b8;         /* logo ultramarine: primary actions, chart bars */
-  --blue-deep: #1a0f93;
-  --blue-tint: #e8e7fb;
-  --green: #34c08a;        /* logo swoosh: growth line, ticker arrows (graphics only) */
-  --green-ink: #127a52;    /* green that passes contrast as text */
-  --paper: #f5f6fa;        /* cool page background */
-  --surface: #ffffff;
-  --line: #dadceb;         /* chart gridlines, hairlines */
-  --night: #0d0b3b;        /* dark bands */
-  --night-line: rgb(255 255 255 / 0.12);
-  --on-night: #eceeff;
-  --on-night-muted: #a9acd6;
+  --ink: #14163a;          /* headings */
+  --text: #43465f;         /* body text (8.9:1 on white) */
+  --muted: #676a83;        /* secondary text (5.4:1 on white) */
+  --brand: #2318b5;        /* logo ultramarine: buttons and links */
+  --brand-dark: #180f86;
+  --brand-tint: #eeedfb;
+  --green: #1f8a5b;        /* dates, status markers (4.6:1 on white) */
+  --green-tint: #e6f4ed;
+  --bg: #ffffff;
+  --bg-soft: #f5f6fa;      /* alternate sections */
+  --line: #e3e5ee;
+  --line-strong: #c9ccdb;
+  --navy: #11113d;         /* closing join band and footer */
+  --on-navy: #e9eaf6;
+  --on-navy-muted: #a5a8c8;
+  --navy-line: rgb(255 255 255 / 0.12);
 
   /* type */
-  --font-ui: var(--font-display), system-ui, sans-serif;
-  --font-read: var(--font-serif), Georgia, serif;
+  --font-head: var(--font-serif), Georgia, serif;
+  --font-body: var(--font-sans), system-ui, sans-serif;
 
-  /* modular scale (1.25) with fluid display sizes */
   --step--1: 0.875rem;
   --step-0: 1.0625rem;
-  --step-1: 1.25rem;
-  --step-2: 1.5625rem;
-  --step-3: clamp(1.75rem, 1.2rem + 1.6vw, 2.4rem);
-  --step-4: clamp(2.2rem, 1.4rem + 3vw, 3.6rem);
-  --step-5: clamp(2.7rem, 1.2rem + 5.6vw, 6.25rem);
+  --step-1: 1.1875rem;
+  --step-2: 1.375rem;
+  --step-3: clamp(1.6rem, 1.3rem + 1vw, 2rem);
+  --step-4: clamp(2rem, 1.5rem + 1.8vw, 2.75rem);
+  --step-5: clamp(2.4rem, 1.6rem + 3vw, 3.75rem);
 
   /* layout */
-  --max: 1240px;
-  --gutter: clamp(1rem, 0.5rem + 2.4vw, 2.5rem);
-  --section: clamp(5rem, 3rem + 8vw, 10rem);
+  --max: 1200px;
+  --gutter: clamp(1rem, 0.4rem + 2.6vw, 2.5rem);
+  --section: clamp(4.5rem, 3rem + 5vw, 7.5rem);
+  --radius: 10px;
   --radius-s: 6px;
-  --radius-m: 14px;
-  --radius-l: 28px;
 
   /* motion */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -63,7 +63,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: 7rem;
 }
 
 html.lenis,
@@ -81,12 +81,11 @@ html.lenis body {
 
 body {
   min-height: 100dvh;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-read);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
   font-size: var(--step-0);
   line-height: 1.65;
-  font-optical-sizing: auto;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
@@ -129,11 +128,13 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-ui);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  font-weight: 700;
+  color: var(--ink);
+  font-family: var(--font-head);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
   text-wrap: balance;
+  font-optical-sizing: auto;
 }
 
 p {
@@ -141,22 +142,106 @@ p {
 }
 
 ::selection {
-  background: var(--blue);
+  background: var(--brand);
   color: #fff;
 }
 
 :focus-visible {
-  outline: 3px solid var(--blue);
+  outline: 2px solid var(--brand);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
-/* ---------- utilities ---------- */
+/* ---------- layout utilities ---------- */
 .container {
   width: min(100% - 2 * var(--gutter), var(--max));
   margin-inline: auto;
 }
 
+.section {
+  padding-block: var(--section);
+}
+
+.section-soft {
+  background: var(--bg-soft);
+}
+
+/* Section heading row: title on the left, optional link on the right. */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: clamp(2rem, 1.5rem + 2vw, 3rem);
+}
+
+.section-head h2 {
+  font-size: var(--step-4);
+}
+
+.section-head p {
+  max-width: 36rem;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: var(--step-1);
+}
+
+/* ---------- shared controls ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 2.875rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: var(--radius-s);
+  font-family: var(--font-body);
+  font-size: 0.975rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary {
+  background: var(--brand);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--brand-dark);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.btn-secondary:hover {
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+
+/* Plain text link with an underline that appears on hover. */
+.text-link {
+  color: var(--brand);
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+  transition: background-size 0.3s var(--ease-out);
+}
+
+.text-link:hover {
+  background-size: 100% 1px;
+}
+
+/* ---------- accessibility ---------- */
 .visually-hidden {
   position: absolute !important;
   width: 1px;
@@ -177,7 +262,6 @@ p {
   padding: 0.75rem 1rem;
   background: var(--ink);
   color: #fff;
-  font-family: var(--font-ui);
   border-radius: var(--radius-s);
   transition: top 0.2s var(--ease-out);
 }
@@ -186,25 +270,7 @@ p {
   top: 1rem;
 }
 
-/* Section heading pattern: a short lead sentence under a large heading. */
-.section-head {
-  display: grid;
-  gap: 1rem;
-  max-width: 46rem;
-  margin-bottom: clamp(2.5rem, 2rem + 3vw, 4.5rem);
-}
-
-.section-head h2 {
-  font-size: var(--step-4);
-}
-
-.section-head p {
-  font-size: var(--step-1);
-  color: var(--muted);
-  max-width: 38rem;
-}
-
-/* Line-mask reveal used by headings (split by JS into .line > .line-inner). */
+/* Masked line used by the hero headline entrance. */
 .line {
   display: block;
   overflow: clip;
@@ -223,7 +289,7 @@ p {
 
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.45s;
+  animation-duration: 0.35s;
   animation-timing-function: var(--ease-in-out);
 }
 

@@ -44,7 +44,7 @@ const orgJsonLd = {
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#f5f6fa" />
+    <meta name="theme-color" content="#ffffff" />
     <meta name="generator" content={Astro.generator} />
     <script is:inline>
       document.documentElement.classList.add('js');
@@ -65,7 +65,7 @@ const orgJsonLd = {
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-sans" preload={[{ weight: '400' }, { weight: '600' }]} />
     <Font cssVariable="--font-serif" preload={[{ style: 'normal' }]} />
 
     <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />

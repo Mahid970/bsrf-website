@@ -9,22 +9,24 @@ export default defineConfig({
   // Fonts are downloaded at build time and served from this site (no Google requests at runtime).
   fonts: [
     {
-      provider: fontProviders.fontsource(),
-      name: 'Bricolage Grotesque',
-      cssVariable: '--font-display',
-      weights: ['200 800'],
-      styles: ['normal'],
-      subsets: ['latin'],
-      fallbacks: ['system-ui', 'sans-serif'],
-    },
-    {
+      // Headings: an academic, journal-like serif.
       provider: fontProviders.fontsource(),
       name: 'Source Serif 4',
       cssVariable: '--font-serif',
-      weights: ['300 700'],
+      weights: ['400 700'],
       styles: ['normal', 'italic'],
       subsets: ['latin'],
       fallbacks: ['Georgia', 'serif'],
+    },
+    {
+      // Body text and interface: precise, finance/data-flavoured sans.
+      provider: fontProviders.fontsource(),
+      name: 'IBM Plex Sans',
+      cssVariable: '--font-sans',
+      weights: ['400', '500', '600'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['system-ui', 'sans-serif'],
     },
   ],
 
