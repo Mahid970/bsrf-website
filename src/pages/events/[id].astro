@@ -76,7 +76,7 @@ const photos = await Promise.all(
 
   {
     photos.length > 0 && (
-      <section class="gallery section-soft" aria-labelledby="gallery-title">
+      <section class="gallery band" aria-labelledby="gallery-title">
         <div class="container">
           <h2 id="gallery-title">{`Photos (${photos.length})`}</h2>
           <ul class="masonry">
@@ -108,14 +108,15 @@ const photos = await Promise.all(
     grid-template-columns: minmax(0, 1fr) 20rem;
     gap: clamp(2rem, 5vw, 5rem);
     align-items: start;
-    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) var(--section);
+    padding-block: 0.5rem var(--section);
   }
 
   .cover {
     aspect-ratio: 16 / 9;
-    border-radius: var(--radius);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-l);
     overflow: hidden;
-    background: var(--brand-tint);
+    background: var(--brand-wash);
     margin-bottom: 2.5rem;
   }
 
@@ -137,7 +138,10 @@ const photos = await Promise.all(
 
   .prose :global(h2) {
     margin-top: 2em;
-    font-size: var(--step-3);
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    font-size: var(--text-xl);
   }
 
   .prose :global(ul) {
@@ -149,7 +153,7 @@ const photos = await Promise.all(
   }
 
   .prose :global(li::marker) {
-    color: var(--green);
+    color: var(--brand);
   }
 
   .prose :global(strong) {
@@ -164,21 +168,20 @@ const photos = await Promise.all(
   /* ---------- details card ---------- */
   .side {
     position: sticky;
-    top: 7rem;
+    top: 6.5rem;
   }
 
   .card {
     padding: 1.5rem;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--bg);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-l);
+    background: var(--surface);
+    box-shadow: 4px 4px 0 var(--amber);
   }
 
   .card h2 {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: 0;
+    font-size: var(--text-sm);
+    font-weight: 700;
     margin-bottom: 1rem;
   }
 
@@ -187,7 +190,7 @@ const photos = await Promise.all(
     gap: 0.9rem;
     padding-bottom: 1.25rem;
     margin-bottom: 1.25rem;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--hairline);
   }
 
   dl > div {
@@ -198,8 +201,17 @@ const photos = await Promise.all(
 
   dt {
     flex: none;
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    border-radius: 8px;
+    background: var(--brand-wash);
     color: var(--brand);
-    padding-top: 0.15rem;
+  }
+
+  dl > div {
+    align-items: center;
   }
 
   dd {
@@ -210,7 +222,7 @@ const photos = await Promise.all(
 
   .ask {
     font-size: 0.925rem;
-    color: var(--muted);
+    color: var(--ink-muted);
   }
 
   .ask a {
@@ -224,7 +236,10 @@ const photos = await Promise.all(
   }
 
   .gallery h2 {
-    font-size: var(--step-4);
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    font-size: var(--text-3xl);
     margin-bottom: 2rem;
   }
 
@@ -243,15 +258,16 @@ const photos = await Promise.all(
   .thumb {
     display: block;
     width: 100%;
-    border-radius: var(--radius-s);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
     overflow: hidden;
     cursor: zoom-in;
-    background: var(--brand-tint);
+    background: var(--brand-wash);
   }
 
   .thumb :global(img) {
     width: 100%;
-    transition: transform 0.6s var(--ease-out);
+    transition: transform 0.6s var(--ease);
   }
 
   .thumb:hover :global(img) {
