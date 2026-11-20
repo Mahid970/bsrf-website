@@ -137,6 +137,11 @@ h4 {
   font-optical-sizing: auto;
 }
 
+h3,
+h4 {
+  text-wrap: pretty;
+}
+
 p {
   text-wrap: pretty;
 }
