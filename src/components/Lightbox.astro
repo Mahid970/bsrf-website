@@ -38,8 +38,8 @@
     max-height: none;
     padding: 0;
     border: 0;
-    background: rgb(13 11 59 / 0.985);
-    color: var(--on-navy);
+    background: rgb(12 13 19 / 0.97);
+    color: #e8e9f0;
     display: grid;
     grid-template-rows: 1fr auto;
     opacity: 0;
@@ -96,7 +96,7 @@
 
   .count {
     font-size: 0.9rem;
-    color: var(--on-navy-muted);
+    color: #9a9db0;
     font-variant-numeric: tabular-nums;
   }
 
@@ -111,7 +111,7 @@
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    box-shadow: inset 0 0 0 1px var(--navy-line);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.14);
     transition: background-color 0.25s ease;
   }
 
@@ -130,8 +130,8 @@
   }
 
   .close {
-    background: var(--on-navy);
-    color: var(--navy);
+    background: #e8e9f0;
+    color: #0f1017;
   }
 
   .close:hover {
@@ -156,7 +156,8 @@
 </style>
 
 <script>
-  import { gsap, reduceMotion } from '../scripts/motion';
+  import { gsap } from 'gsap';
+  import { reduceMotion } from '../scripts/motion';
 
   const dialog = document.querySelector<HTMLDialogElement>('[data-lb]');
   const img = document.querySelector<HTMLImageElement>('[data-lb-img]');

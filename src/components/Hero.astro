@@ -1,347 +1,370 @@
 ---
 import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
-import { site } from '../data/site';
+import { publications, researchAreas, site } from '../data/site';
 import { getLaunchPhotos } from '../data/photos';
 import { getEvents } from '../utils/events';
 import { dateParts, isoDate } from '../utils/format';
 
 const photos = await getLaunchPhotos();
-const main = photos[0]; // portrait: speaker introducing the chief advisor
-const side = [photos[3], photos[16]]; // landscape: full lecture room, faculty panel
+const photo = photos[3]; // full lecture room at the launch
 
 const { upcoming } = await getEvents();
-const next = upcoming[0];
-const nextDate = next ? dateParts(next.data.date) : null;
+const coming = upcoming.slice(0, 2);
 
-const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
+const stats = [
+  { icon: 'research', value: researchAreas.length, label: 'Research areas', note: 'each guided by faculty' },
+  { icon: 'document', value: publications.length, label: 'Publications', note: 'papers and policy briefs' },
+  { icon: 'calendar', value: upcoming.length, label: 'Upcoming events', note: 'seminars and workshops' },
+] as const;
 ---
 
-<section class="hero" aria-labelledby="hero-title" data-hero>
-  <div class="container grid">
+<section class="hero container" aria-labelledby="hero-title">
+  <div class="grid">
     <div class="copy">
-      <h1 id="hero-title" aria-label={lines.join(' ')}>
-        {
-          lines.map((l) => (
-            <span class="line" aria-hidden="true">
-              <span class="line-inner">{l}</span>
-            </span>
-          ))
-        }
-      </h1>
-      <p class="lede" data-hero-fade>
-        {`${site.short} brings faculty members and students of the ${site.university} together to study Bangladesh’s financial sector, share what they learn and publish their findings.`}
+      <p class="pill rise">
+        <span class="pill-dot" aria-hidden="true"></span>
+        {`${site.department}, ${site.university}`}
       </p>
-      <div class="actions" data-hero-fade>
-        <a class="btn btn-primary" href="#join">Become a member</a>
-        <a class="btn btn-secondary" href="#research">Explore our research</a>
+
+      <h1 id="hero-title" class="display title rise" style="--i:1">Advancing research in banking, insurance and finance.</h1>
+      <p class="lede rise" style="--i:2">
+        {`${site.short} brings faculty members and students together to study Bangladesh’s financial sector, share what they learn and publish what they find.`}
+      </p>
+
+      <div class="actions rise" style="--i:3">
+        <a class="btn btn-primary" href="#join">
+          <Icon name="join" size={17} />
+          Become a member
+        </a>
+        <a class="btn btn-quiet" href="#research">Explore our research</a>
       </div>
-      <dl class="facts" data-hero-fade>
-        <div>
-          <dt>Founded</dt>
-          <dd>{site.foundedLabel}</dd>
-        </div>
-        <div>
-          <dt>Home</dt>
-          <dd>{site.department}</dd>
-        </div>
-      </dl>
     </div>
 
-    <div class="media">
-      <div class="mosaic">
-        <figure class="tile tile-main" data-hero-tile>
-          <Image src={main.src} alt={main.alt} widths={[480, 720, 960, 1280]} sizes="(min-width: 981px) 30vw, 92vw" loading="eager" fetchpriority="high" />
-        </figure>
+    <div class="card panel rise" style="--i:2">
+      <figure class="photo">
+        <Image src={photo.src} alt={photo.alt} widths={[640, 960, 1280]} sizes="(min-width: 1024px) 540px, 92vw" loading="eager" fetchpriority="high" />
+        <figcaption class="pill photo-pill">
+          <span class="pill-dot" aria-hidden="true"></span>
+          {`Launched ${site.foundedLabel}`}
+        </figcaption>
+      </figure>
+
+      <div class="coming">
+        <p class="coming-title">Coming up</p>
         {
-          side.map((p) => (
-            <figure class="tile" data-hero-tile>
-              <Image src={p.src} alt={p.alt} widths={[400, 640]} sizes="(min-width: 981px) 18vw, 45vw" loading="eager" />
-            </figure>
-          ))
+          coming.length ? (
+            <ul>
+              {coming.map((e) => {
+                const d = dateParts(e.data.date);
+                return (
+                  <li>
+                    <a class="row-link event-row" href={`/events/${e.id}/`}>
+                      <time class="date-tile" datetime={isoDate(e.data.date)}>
+                        <span class="month">{d.month}</span>
+                        <span class="day score">{d.day}</span>
+                      </time>
+                      <span class="event-text">
+                        <span class="event-title">{e.data.title}</span>
+                        <span class="event-meta">{[e.data.kind, e.data.time].filter(Boolean).join(', ')}</span>
+                      </span>
+                      <span class="row-arrow">
+                        <Icon name="arrow" size={18} />
+                      </span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p class="muted none">No events scheduled yet. Follow the forum on Facebook for news.</p>
+          )
         }
       </div>
-
-      {
-        next && nextDate && (
-          <a class="next" href={`/events/${next.id}/`} data-hero-card>
-            <span class="next-label">Next event</span>
-            <span class="next-body">
-              <time class="date" datetime={isoDate(next.data.date)}>
-                <span class="date-month">{nextDate.month}</span>
-                <span class="date-day">{nextDate.day}</span>
-              </time>
-              <span class="next-text">
-                <span class="next-title">{next.data.title}</span>
-                <span class="next-meta">
-                  <Icon name="pin" size={15} />
-                  {next.data.location}
-                </span>
-              </span>
-            </span>
-          </a>
-        )
-      }
     </div>
   </div>
+
+  <dl class="stat-strip reveal">
+    {
+      stats.map((s) => (
+        <div class="stat-tile">
+          <span class="watermark" aria-hidden="true">
+            <Icon name={s.icon} size={96} />
+          </span>
+          <span class="icon-tile" aria-hidden="true">
+            <Icon name={s.icon} size={20} />
+          </span>
+          <dt class="stat-label">
+            {s.label}
+            <span class="muted">{s.note}</span>
+          </dt>
+          <dd class="score stat-value" data-count={s.value}>
+            {s.value}
+          </dd>
+        </div>
+      ))
+    }
+  </dl>
 </section>
 
 <style>
   .hero {
-    position: relative;
-    padding-block: clamp(3rem, 2rem + 4vw, 5.5rem) clamp(3.5rem, 2rem + 5vw, 6.5rem);
-    isolation: isolate;
-  }
-
-  /* Hidden until the entrance timeline starts; shows after 2.5s if scripts fail. */
-  :global(.motion) .hero {
-    visibility: hidden;
-    animation: hero-fallback 0s 2.5s forwards;
-  }
-
-  @keyframes hero-fallback {
-    to {
-      visibility: visible;
-    }
-  }
-
-  /* Soft panel behind the photos, bleeding to the right edge. */
-  .hero::before {
-    content: '';
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 42%;
-    background: var(--bg-soft);
+    padding-block: clamp(2rem, 1rem + 4vw, 5rem) clamp(3rem, 2rem + 3vw, 4rem);
   }
 
   .grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
-    gap: clamp(2.5rem, 5vw, 5rem);
+    gap: 2.5rem;
     align-items: center;
   }
 
-  h1 {
-    font-size: var(--step-5);
-    font-weight: 600;
-    line-height: 1.08;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
+  @media (min-width: 1024px) {
+    .grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 3.5rem;
+    }
+  }
+
+  .title {
+    margin-top: 1.25rem;
+    font-size: clamp(2.25rem, 1.2rem + 4.6vw, 3.8rem);
   }
 
   .lede {
-    font-size: var(--step-1);
-    line-height: 1.6;
-    max-width: 33rem;
-    margin-bottom: 2rem;
+    margin-top: 1rem;
+    max-width: 34rem;
+    font-size: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);
+    color: var(--ink-muted);
   }
 
   .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .facts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem 2.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line);
-  }
-
-  .facts dt {
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-
-  .facts dd {
-    font-weight: 600;
-    color: var(--ink);
-  }
-
-  /* ---------- photo mosaic ---------- */
-  .media {
-    position: relative;
-  }
-
-  .mosaic {
     display: grid;
-    grid-template-columns: 1.55fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 0.75rem;
-    aspect-ratio: 5 / 4;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
   }
 
-  .tile {
+  @media (min-width: 420px) {
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+  }
+
+  /* ---------- photo + coming up ---------- */
+  .card {
     overflow: hidden;
-    border-radius: var(--radius);
-    background: var(--brand-tint);
   }
 
-  .tile-main {
-    grid-row: 1 / -1;
+  .photo {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    background: var(--surface-sunk);
   }
 
-  /* Keep the speaker, not the ceiling, in view. */
-  .tile-main :global(img) {
-    object-position: 50% 65%;
-  }
-
-  .tile :global(img) {
+  .photo :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  /* ---------- next event card ---------- */
-  /* Sits under the mosaic, overlapping only its bottom edge so no photo is covered. */
-  .next {
-    position: relative;
-    margin: -1.75rem 0 0 clamp(-2.5rem, -3vw, -1rem);
-    width: min(24rem, 80%);
-    display: grid;
-    gap: 0.75rem;
-    padding: 1.1rem 1.25rem 1.25rem;
-    background: var(--bg);
-    border-radius: var(--radius);
-    box-shadow:
-      0 0 0 1px var(--line),
-      0 24px 48px -28px rgb(20 22 58 / 0.45);
-    text-decoration: none;
-    transition: box-shadow 0.25s ease;
-  }
-
-  .next:hover {
-    box-shadow:
-      0 0 0 1px var(--brand),
-      0 24px 48px -28px rgb(20 22 58 / 0.45);
-  }
-
-  .next-label {
-    font-size: var(--step--1);
-    font-weight: 600;
-    color: var(--green);
-  }
-
-  .next-body {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .date {
-    flex: none;
-    display: grid;
-    place-items: center;
-    width: 3.5rem;
-    padding: 0.4rem 0 0.5rem;
-    border-radius: var(--radius-s);
-    background: var(--brand-tint);
-    color: var(--brand);
-    line-height: 1.1;
-  }
-
-  .date-month {
-    font-size: 0.8rem;
-    font-weight: 600;
-  }
-
-  .date-day {
-    font-family: var(--font-head);
-    font-size: 1.6rem;
-    font-weight: 600;
-  }
-
-  .next-text {
-    display: grid;
-    gap: 0.4rem;
-  }
-
-  .next-title {
-    font-family: var(--font-head);
-    font-size: 1.05rem;
-    font-weight: 600;
-    line-height: 1.3;
+  .photo-pill {
+    position: absolute;
+    left: 0.9rem;
+    bottom: 0.9rem;
     color: var(--ink);
   }
 
-  .next-meta {
+  .coming {
+    padding: 1.1rem 1.1rem 1.2rem;
+    border-top: 1px solid var(--hairline);
+  }
+
+  .coming-title {
+    margin-bottom: 0.75rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  .coming ul {
+    display: grid;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .event-row {
     display: flex;
-    gap: 0.35rem;
-    align-items: flex-start;
-    font-size: var(--step--1);
-    line-height: 1.4;
-    color: var(--muted);
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.6rem 0.9rem 0.6rem 0.6rem;
   }
 
-  .next-meta :global(svg) {
-    flex: none;
-    margin-top: 0.1rem;
+  .event-text {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+    flex: 1;
   }
 
-  @media (max-width: 980px) {
-    .hero::before {
-      display: none;
-    }
+  .event-title {
+    font-weight: 600;
+    line-height: 1.3;
+  }
 
-    .grid {
-      grid-template-columns: 1fr;
-    }
+  .event-meta {
+    font-size: var(--text-sm);
+    color: var(--ink-muted);
+  }
 
-    .next {
-      width: auto;
-      margin: -1.75rem 1rem 0;
+  .none {
+    font-size: var(--text-sm);
+  }
+
+  /* ---------- the figures ---------- */
+
+  /* One bordered strip split into three: the figures belong together. */
+  .stat-strip {
+    display: grid;
+    margin-top: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-l);
+    background: var(--surface);
+    overflow: hidden;
+  }
+
+  @media (min-width: 640px) {
+    .stat-strip {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 
-  @media (max-width: 560px) {
-    .mosaic {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto;
-      aspect-ratio: auto;
-    }
+  .stat-tile {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1.5rem 1.4rem;
+    overflow: hidden;
+    transition: background-color 220ms var(--ease);
+  }
 
-    .tile-main {
-      grid-column: 1 / -1;
-      grid-row: auto;
-      aspect-ratio: 4 / 3;
-    }
+  .stat-tile + .stat-tile {
+    border-top: 1px solid var(--hairline);
+  }
 
-    .tile {
-      aspect-ratio: 4 / 3;
+  @media (min-width: 640px) {
+    .stat-tile + .stat-tile {
+      border-top: 0;
+      border-left: 1px solid var(--hairline);
     }
+  }
 
-    .next {
-      margin: 0.75rem 0 0;
-    }
+  /* An amber rule grows along the top of the tile you point at. */
+  .stat-tile::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: var(--amber);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms var(--ease);
+  }
 
-    .actions {
-      flex-direction: column;
-    }
+  .watermark {
+    position: absolute;
+    right: -0.9rem;
+    bottom: -1.1rem;
+    color: var(--brand);
+    opacity: 0.06;
+    transform: rotate(-12deg);
+    transition:
+      transform 420ms var(--ease),
+      opacity 220ms var(--ease);
+  }
+
+  .watermark :global(svg) {
+    stroke-width: 1;
+  }
+
+  .stat-value {
+    order: 2;
+    margin-top: 1.25rem;
+    font-size: var(--text-4xl);
+    transition: color 200ms var(--ease);
+  }
+
+  .stat-label {
+    order: 3;
+    display: grid;
+    gap: 0.1rem;
+    margin-top: 0.5rem;
+    font-weight: 600;
+  }
+
+  .stat-label .muted {
+    font-size: var(--text-sm);
+    font-weight: 400;
+  }
+
+  .stat-tile .icon-tile {
+    order: 1;
+  }
+
+  .stat-tile:hover {
+    background: var(--brand-wash);
+  }
+
+  .stat-tile:hover::before {
+    transform: scaleX(1);
+  }
+
+  .stat-tile:hover .watermark {
+    opacity: 0.12;
+    transform: rotate(0deg) scale(1.08);
+  }
+
+  .stat-tile:hover .icon-tile {
+    background: var(--brand);
+    color: var(--on-brand);
+    transform: rotate(-8deg) scale(1.08);
+  }
+
+  .stat-tile:hover .stat-value {
+    color: var(--brand);
   }
 </style>
 
 <script>
-  import { gsap, reduceMotion } from '../scripts/motion';
+  // Figures count up once, the first time the strip is on screen.
+  const values = [...document.querySelectorAll<HTMLElement>('[data-count]')];
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  if (hero && !reduceMotion) {
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-    tl.set(hero, { visibility: 'visible' })
-      .from(hero.querySelectorAll('.line-inner'), { yPercent: 100, duration: 0.9, stagger: 0.08 }, 0)
-      .from(hero.querySelectorAll('[data-hero-fade]'), { y: 14, opacity: 0, duration: 0.7, stagger: 0.08 }, 0.3)
-      .fromTo(
-        hero.querySelectorAll('[data-hero-tile]'),
-        { clipPath: 'inset(0 0 100% 0)' },
-        { clipPath: 'inset(0 0 0% 0)', duration: 1, stagger: 0.12, ease: 'power4.inOut' },
-        0.1,
-      )
-      .from(hero.querySelectorAll('[data-hero-tile] img'), { scale: 1.08, duration: 1.4, stagger: 0.12 }, 0.1)
-      .from(hero.querySelectorAll('[data-hero-card]'), { y: 20, opacity: 0, duration: 0.8 }, 0.75);
+  if (values.length && !reduce && 'IntersectionObserver' in window) {
+    const run = (el: HTMLElement) => {
+      const target = Number(el.dataset.count);
+      const start = performance.now();
+      const duration = 900;
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = String(Math.round(target * eased));
+        if (t < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            run(entry.target as HTMLElement);
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.6 },
+    );
+    values.forEach((el) => io.observe(el));
   }
 </script>
