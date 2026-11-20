@@ -2,7 +2,7 @@
 
 Official website of the **BankSure Scientific Research Forum (BSRF)**, a research platform of faculty members and students of the Department of Banking and Insurance, University of Chittagong.
 
-Built with [Astro](https://astro.build) as a fully static site, with [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for smooth scrolling and light motion, and hosted for free on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/). The design system (flat panels, hairlines, stamp buttons, light and dark themes) follows CU Teachers’ Evaluation. Type is Archivo at expanded width for headings and figures (from `@fontsource-variable/archivo`) and Instrument Sans for text, both self-hosted.
+Built with [Astro](https://astro.build) as a fully static site, with [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for smooth scrolling and light motion, and hosted for free on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/). The look is clean and flat with small hover details and a light/dark theme. Colours come from the BSRF logo (ultramarine, the green swoosh and deep navy), and the single typeface is Schibsted Grotesk, self-hosted at build time.
 
 ## Editing content
 
@@ -69,11 +69,11 @@ src/
   layouts/      Base.astro: page shell, SEO tags, fonts
   pages/        home, events list, event pages, publications, 404
   scripts/      motion.ts: smooth scroll and scroll reveals
-  styles/       global.css: light/dark colour tokens, type, panels, buttons, reveals
+  styles/       global.css: light/dark colour tokens, type, cards, pill buttons, tabs, reveals
   utils/        date formatting and upcoming/past event helpers
 ```
 
-The theme switch in the header remembers the visitor's choice on their own device (light is the default). Section reveals are pure CSS tied to scroll position. Motion respects the visitor's "reduce motion" setting: smooth scrolling and animations are switched off and content is shown in its final state.
+The theme follows the visitor's device setting; the switch in the header overrides it and remembers the choice on that device. Section reveals are pure CSS tied to scroll position. Motion respects the visitor's "reduce motion" setting: smooth scrolling and animations are switched off and content is shown in its final state.
 
 ## Credits
 
