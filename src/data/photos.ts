@@ -13,9 +13,7 @@ export async function getLaunchPhotos(): Promise<Photo[]> {
   return entry.data.gallery;
 }
 
-/** Which launch photos (by position in the gallery) appear where on the home page. */
+/** Which launch photos (by position in the gallery) appear in the home page gallery. The first one is shown large. */
 export const homePicks = {
-  about: 3,
-  people: 16,
-  reel: [3, 0, 4, 5, 9, 10, 16, 8],
+  gallery: [10, 0, 5, 8, 9],
 };
