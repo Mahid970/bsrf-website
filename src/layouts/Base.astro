@@ -1,5 +1,4 @@
 ---
-import '@fontsource-variable/archivo/wdth.css';
 import '../styles/global.css';
 import { Font } from 'astro:assets';
 import { site } from '../data/site';
@@ -45,13 +44,19 @@ const orgJsonLd = {
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#f2f2f0" />
+    <meta name="theme-color" content="#f7f8fc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0d24" media="(prefers-color-scheme: dark)" />
     <meta name="generator" content={Astro.generator} />
     <script is:inline>
-      // Apply a saved dark theme before anything paints. Light is the default; dark follows the toggle only.
-      try {
-        if (localStorage.getItem('bsrf_theme') === 'dark') document.documentElement.dataset.theme = 'dark';
-      } catch (e) {}
+      // Pick the theme before anything paints: a choice made with the switch wins, otherwise follow the device.
+      (function () {
+        var t = null;
+        try {
+          t = localStorage.getItem('bsrf_theme');
+        } catch (e) {}
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+      })();
       document.documentElement.classList.add('js');
     </script>
 
@@ -69,7 +74,7 @@ const orgJsonLd = {
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-sans" preload={[{ style: 'normal' }]} />
 
     <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
   </head>

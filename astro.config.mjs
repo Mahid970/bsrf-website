@@ -6,15 +6,14 @@ export default defineConfig({
   // Public URL of the deployed site (used for canonical links and social cards).
   site: 'https://bsrf-website.mmahidujjaman.workers.dev',
 
-  // Text face, downloaded at build time and served from this site.
-  // Archivo (headings and figures) comes from @fontsource-variable/archivo so its width axis is available.
+  // One family for headings and text, downloaded at build time and served from this site.
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Instrument Sans',
+      name: 'Schibsted Grotesk',
       cssVariable: '--font-sans',
-      weights: ['400 700'],
-      styles: ['normal'],
+      weights: ['400 800'],
+      styles: ['normal', 'italic'],
       subsets: ['latin'],
       fallbacks: ['system-ui', 'sans-serif'],
     },
