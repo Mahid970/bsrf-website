@@ -11,11 +11,15 @@ const events = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      /** Seminar, Workshop, Reading circle, Launch... */
+      kind: z.string().default('Event'),
       date: z.coerce.date(),
+      /** Free text such as "2:30 PM – 4:30 PM". */
+      time: z.string().optional(),
       location: z.string(),
       summary: z.string(),
-      cover: image(),
-      coverAlt: z.string(),
+      cover: image().optional(),
+      coverAlt: z.string().default(''),
       gallery: z
         .array(
           z.object({

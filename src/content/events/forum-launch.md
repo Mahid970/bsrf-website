@@ -1,6 +1,8 @@
 ---
 title: The forum opens
+kind: Launch
 date: 2026-11-15
+time: Afternoon
 location: Room 120, Department of Banking and Insurance
 summary: BankSure Scientific Research Forum launched with talks from faculty members, a session on higher study, the first member badges and a cake with the forum’s logo.
 cover: ../../assets/photos/launch-04.jpg
