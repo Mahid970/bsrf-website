@@ -18,45 +18,54 @@ const { upcoming, past } = await getEvents();
 
   <div class="container body">
     <section aria-labelledby="upcoming-title">
-      <h2 id="upcoming-title">Upcoming</h2>
+      <h2 id="upcoming-title" class="display list-title">
+        Upcoming
+        <span class="score count">{upcoming.length}</span>
+      </h2>
       {
         upcoming.length ? (
-          <ul class="list">
+          <ul class="rows">
             {upcoming.map((e) => {
               const d = dateParts(e.data.date);
               return (
-                <li class="row" data-reveal>
-                  <time class="date" datetime={isoDate(e.data.date)}>
-                    <span class="date-month">{d.month}</span>
-                    <span class="date-day">{d.day}</span>
-                  </time>
-                  <div class="text">
-                    <p class="kind">{e.data.kind}</p>
-                    <h3>
-                      <a href={`/events/${e.id}/`}>{e.data.title}</a>
-                    </h3>
-                    <p class="summary">{e.data.summary}</p>
-                    <p class="details">
-                      {e.data.time && (
+                <li class="reveal">
+                  <a class="row-link row" href={`/events/${e.id}/`}>
+                    <time class="date-tile big" datetime={isoDate(e.data.date)}>
+                      <span class="month">{d.month}</span>
+                      <span class="day score">{d.day}</span>
+                    </time>
+                    <span class="text">
+                      <span class="tag">{e.data.kind}</span>
+                      <span class="title">{e.data.title}</span>
+                      <span class="summary muted">{e.data.summary}</span>
+                      <span class="details muted">
+                        {e.data.time && (
+                          <span>
+                            <Icon name="clock" size={15} />
+                            {e.data.time}
+                          </span>
+                        )}
                         <span>
-                          <Icon name="clock" size={15} />
-                          {e.data.time}
+                          <Icon name="pin" size={15} />
+                          {e.data.location}
                         </span>
-                      )}
-                      <span>
-                        <Icon name="pin" size={15} />
-                        {e.data.location}
                       </span>
-                    </p>
-                  </div>
+                    </span>
+                    <span class="row-arrow">
+                      <Icon name="arrow" size={20} />
+                    </span>
+                  </a>
                 </li>
               );
             })}
           </ul>
         ) : (
-          <p class="empty">
+          <p class="panel empty muted">
             No events are scheduled yet.{' '}
-            <a href={site.facebook} target="_blank" rel="noopener">Follow us on Facebook</a> to hear about the next one.
+            <a class="link-grow" href={site.facebook} target="_blank" rel="noopener">
+              Follow us on Facebook
+            </a>{' '}
+            to hear about the next one.
           </p>
         )
       }
@@ -65,11 +74,14 @@ const { upcoming, past } = await getEvents();
     {
       past.length > 0 && (
         <section aria-labelledby="past-title">
-          <h2 id="past-title">Past events</h2>
+          <h2 id="past-title" class="display list-title">
+            Past events
+            <span class="score count">{past.length}</span>
+          </h2>
           <ul class="past">
             {past.map((e) => (
-              <li data-reveal>
-                <a class="past-card" href={`/events/${e.id}/`}>
+              <li class="reveal">
+                <a class="row-link past-card" href={`/events/${e.id}/`}>
                   <span class="thumb" style={`view-transition-name: cover-${e.id}`}>
                     {e.data.cover ? (
                       <Image src={e.data.cover} alt="" widths={[400, 640, 800]} sizes="(min-width: 900px) 360px, 92vw" />
@@ -79,9 +91,11 @@ const { upcoming, past } = await getEvents();
                       </span>
                     )}
                   </span>
-                  <span class="kind">{e.data.kind}</span>
-                  <span class="past-title">{e.data.title}</span>
-                  <span class="past-date">{formatDate(e.data.date)}</span>
+                  <span class="past-text">
+                    <span class="tag">{e.data.kind}</span>
+                    <span class="title">{e.data.title}</span>
+                    <span class="muted date">{formatDate(e.data.date)}</span>
+                  </span>
                 </a>
               </li>
             ))}
@@ -95,138 +109,118 @@ const { upcoming, past } = await getEvents();
 <style>
   .body {
     display: grid;
-    gap: clamp(3.5rem, 3rem + 3vw, 5.5rem);
-    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) var(--section);
+    gap: 3.5rem;
+    padding-bottom: var(--section);
   }
 
-  h2 {
-    font-size: var(--step-3);
-    padding-bottom: 1rem;
-    border-bottom: 2px solid var(--ink);
+  .list-title {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    margin-bottom: 1.1rem;
+    font-size: var(--text-2xl);
   }
 
-  .list {
+  .count {
+    font-size: 1.1rem;
+    color: var(--brand);
+  }
+
+  .rows {
+    display: grid;
+    gap: 0.6rem;
     list-style: none;
     padding: 0;
   }
 
   .row {
     display: flex;
-    gap: 1.5rem;
     align-items: flex-start;
-    padding: 1.75rem 0;
-    border-bottom: 1px solid var(--line);
+    gap: 1.1rem;
+    padding: 1.1rem 1.25rem 1.1rem 1.1rem;
   }
 
-  .date {
-    flex: none;
-    display: grid;
-    place-items: center;
+  .date-tile.big {
     width: 4.25rem;
-    padding: 0.5rem 0 0.6rem;
-    border-radius: var(--radius-s);
-    background: var(--brand-tint);
-    color: var(--brand);
-    line-height: 1.1;
   }
 
-  .date-month {
-    font-size: 0.85rem;
-    font-weight: 600;
-  }
-
-  .date-day {
-    font-family: var(--font-head);
+  .date-tile.big .day {
     font-size: 2rem;
-    font-weight: 600;
   }
 
   .text {
     display: grid;
+    justify-items: start;
     gap: 0.4rem;
-    max-width: 46rem;
+    flex: 1;
+    min-width: 0;
   }
 
-  .kind {
-    font-size: var(--step--1);
+  .title {
+    font-family: var(--font-display);
     font-weight: 600;
-    color: var(--green);
-  }
-
-  h3 {
-    font-size: var(--step-2);
-    line-height: 1.3;
-  }
-
-  h3 a {
-    text-decoration: none;
-  }
-
-  h3 a:hover {
-    color: var(--brand);
-    text-decoration: underline;
+    font-stretch: 106%;
+    font-size: 1.15rem;
+    line-height: 1.25;
   }
 
   .summary {
-    color: var(--text);
+    max-width: 52rem;
+    font-size: 0.95rem;
   }
 
   .details {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.4rem 1.5rem;
-    font-size: 0.9rem;
-    color: var(--muted);
+    gap: 0.35rem 1.25rem;
+    font-size: var(--text-sm);
   }
 
   .details span {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
+    gap: 0.35rem;
+  }
+
+  .row .row-arrow {
+    align-self: center;
   }
 
   .empty {
-    padding: 1.5rem 0;
-    color: var(--muted);
+    padding: 1.25rem;
   }
 
-  .empty a {
-    color: var(--brand);
-  }
-
-  /* ---------- past events ---------- */
+  /* ---------- past ---------- */
   .past {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
-    gap: 2rem 1.5rem;
+    gap: 0.75rem;
     list-style: none;
-    padding: 1.75rem 0 0;
+    padding: 0;
   }
 
   .past-card {
     display: grid;
-    gap: 0.4rem;
-    text-decoration: none;
+    height: 100%;
+    overflow: hidden;
   }
 
   .thumb {
     display: block;
-    aspect-ratio: 3 / 2;
-    margin-bottom: 0.6rem;
-    border-radius: var(--radius);
+    aspect-ratio: 16 / 10;
+    background: var(--surface-sunk);
     overflow: hidden;
-    background: var(--brand-tint);
   }
 
   .thumb :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s var(--ease-out);
+    transition: transform 600ms var(--ease);
   }
 
   .past-card:hover .thumb :global(img) {
-    transform: scale(1.03);
+    transform: scale(1.04);
   }
 
   .thumb-empty {
@@ -237,34 +231,33 @@ const { upcoming, past } = await getEvents();
     opacity: 0.5;
   }
 
-  .past-title {
-    font-family: var(--font-head);
-    font-size: 1.2rem;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--ink);
+  .past-text {
+    display: grid;
+    justify-items: start;
+    gap: 0.4rem;
+    padding: 1rem 1.1rem 1.1rem;
   }
 
-  .past-card:hover .past-title {
-    color: var(--brand);
-  }
-
-  .past-date {
-    font-size: 0.9rem;
-    color: var(--muted);
+  .date {
+    font-size: var(--text-sm);
   }
 
   @media (max-width: 560px) {
     .row {
-      gap: 1rem;
+      gap: 0.85rem;
+      padding: 0.9rem;
     }
 
-    .date {
+    .date-tile.big {
       width: 3.5rem;
     }
 
-    .date-day {
+    .date-tile.big .day {
       font-size: 1.6rem;
+    }
+
+    .row .row-arrow {
+      display: none;
     }
   }
 </style>
