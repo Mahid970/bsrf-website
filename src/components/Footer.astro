@@ -7,117 +7,102 @@ import { nav, site } from '../data/site';
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-  <div class="container cols">
-    <div class="brand">
-      <a class="lockup" href="/">
-        <span class="mark">
-          <Image src={mark} alt="" width={56} height={56} densities={[1, 2]} />
-        </span>
-        <span class="wordmark">
-          <span>BankSure Scientific</span>
-          <span>Research Forum</span>
-        </span>
-      </a>
-      <p class="muted">{`A research platform of faculty members and students of the ${site.department}, ${site.university}.`}</p>
-    </div>
-
-    <div class="col">
-      <h2>Explore</h2>
-      <ul>
-        {
-          nav.map((item) => (
-            <li>
-              <a class="link" href={item.href}>
-                {item.label}
-              </a>
-            </li>
-          ))
-        }
-        <li><a class="link" href="/#join">Become a member</a></li>
-      </ul>
-    </div>
-
-    <div class="col">
-      <h2>Visit</h2>
-      <address class="muted">
-        {site.department}
-        <br />
-        {site.faculty}
-        <br />
-        {site.university}
-        <br />
-        {site.city}
-      </address>
-      <a class="link" href={site.mapUrl} target="_blank" rel="noopener">Open in Google Maps</a>
-    </div>
-
-    <div class="col">
-      <h2>Connect</h2>
-      <ul>
-        <li>
-          <a class="link with-icon" href={site.facebook} target="_blank" rel="noopener">
-            <Icon name="facebook" size={16} />
-            Facebook
+<footer class="footer container">
+  <div class="panel">
+    <div class="top">
+      <div class="brand">
+        <a class="lockup" href="/">
+          <span class="mark">
+            <Image src={mark} alt="" width={40} height={40} densities={[1, 2]} />
+          </span>
+          <span class="name">{site.name}</span>
+        </a>
+        <p>{`A research platform of faculty members and students of the ${site.department}, ${site.university}.`}</p>
+        <div class="social">
+          <a class="round" href={site.facebook} target="_blank" rel="noopener" aria-label="Facebook">
+            <Icon name="facebook" size={18} />
           </a>
-        </li>
-        {
-          site.email && (
-            <li>
-              <a class="link with-icon" href={`mailto:${site.email}`}>
-                <Icon name="mail" size={16} />
-                {site.email}
+          {
+            site.email && (
+              <a class="round" href={`mailto:${site.email}`} aria-label={`Email ${site.email}`}>
+                <Icon name="mail" size={18} />
               </a>
-            </li>
-          )
-        }
-      </ul>
-    </div>
-  </div>
+            )
+          }
+        </div>
+      </div>
 
-  <div class="container base">
-    <p>{`© ${year} ${site.name}. All rights reserved.`}</p>
-    <p>{site.tagline}</p>
+      <div class="col">
+        <h2>Explore</h2>
+        <ul>
+          {
+            nav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="col">
+        <h2>Visit</h2>
+        <address>
+          {site.department}
+          <br />
+          {site.faculty}
+          <br />
+          {site.university}
+          <br />
+          {site.city}
+        </address>
+        <a class="map" href={site.mapUrl} target="_blank" rel="noopener">
+          <Icon name="pin" size={16} />
+          Open in Google Maps
+        </a>
+      </div>
+    </div>
+
+    <div class="base">
+      <p>{`© ${year} ${site.name}`}</p>
+      <p class="tag">
+        <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        {site.tagline}
+      </p>
+    </div>
   </div>
 </footer>
 
 <style>
   .footer {
-    border-top: 1px solid var(--hairline);
+    padding-bottom: var(--gutter);
+  }
+
+  .panel {
+    border-radius: var(--r-lg);
+    background: var(--navy);
+    color: var(--on-navy-muted);
     font-size: var(--text-sm);
+    padding: clamp(2rem, 1.5rem + 3vw, 3.5rem) clamp(1.25rem, 0.75rem + 3vw, 3.5rem) 0;
   }
 
-  .cols {
+  .top {
     display: grid;
-    gap: 2.5rem 2rem;
-    padding-block: 3rem;
+    gap: 2.5rem;
   }
 
-  @media (min-width: 640px) {
-    .cols {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .brand {
-      grid-column: 1 / -1;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .cols {
-      grid-template-columns: 1.6fr repeat(3, minmax(0, 1fr));
-    }
-
-    .brand {
-      grid-column: auto;
+  @media (min-width: 768px) {
+    .top {
+      grid-template-columns: 1.6fr 1fr 1.2fr;
+      gap: 3rem;
     }
   }
 
   .brand {
     display: grid;
     align-content: start;
-    gap: 1rem;
-    max-width: 26rem;
+    gap: 1.1rem;
+    max-width: 24rem;
   }
 
   .lockup {
@@ -129,83 +114,109 @@ const year = new Date().getFullYear();
   .mark {
     display: grid;
     place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 12px;
-  }
-
-  .mark :global(img) {
-    width: 56px;
-    height: 56px;
-  }
-
-  :global(:root[data-theme='dark']) .mark {
+    width: 3rem;
+    height: 3rem;
+    flex-shrink: 0;
+    border-radius: 50%;
     background: #fff;
   }
 
-  :global(:root[data-theme='dark']) .mark :global(img) {
-    width: 46px;
-    height: 46px;
+  .mark :global(img) {
+    width: 36px;
+    height: 36px;
   }
 
-  .wordmark {
+  .name {
+    color: #fff;
+    font-weight: 750;
+    font-size: 1.05rem;
+    line-height: 1.25;
+  }
+
+  .social {
     display: flex;
-    flex-direction: column;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-stretch: 108%;
-    font-size: 1.35rem;
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    gap: 0.5rem;
+  }
+
+  .round {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 1px solid var(--navy-line);
+    color: #fff;
+    transition:
+      background-color 220ms var(--ease),
+      border-color 220ms var(--ease),
+      transform 260ms var(--ease);
+  }
+
+  .round:hover {
+    background: rgb(255 255 255 / 0.1);
+    border-color: rgb(255 255 255 / 0.4);
+    transform: translateY(-2px);
   }
 
   h2 {
-    margin-bottom: 0.9rem;
+    margin-bottom: 1rem;
+    color: #fff;
     font-size: var(--text-sm);
     font-weight: 700;
+    letter-spacing: 0;
   }
 
-  .col {
+  .col ul {
     display: grid;
-    align-content: start;
-  }
-
-  ul {
-    display: grid;
-    gap: 0.55rem;
+    gap: 0.6rem;
     list-style: none;
     padding: 0;
+  }
+
+  .col a {
+    color: var(--on-navy-muted);
+    transition: color 200ms var(--ease);
+  }
+
+  .col a:hover {
+    color: #fff;
   }
 
   address {
     font-style: normal;
     line-height: 1.6;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.85rem;
   }
 
-  .link {
-    color: var(--ink-muted);
-    transition: color 160ms var(--ease);
-  }
-
-  .link:hover {
-    color: var(--ink);
-  }
-
-  .with-icon {
+  .col .map {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: 0.4rem;
+    color: var(--green-bright);
+    font-weight: 600;
   }
 
   .base {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
     gap: 0.5rem 2rem;
-    padding-block: 1.25rem 1.75rem;
-    border-top: 1px solid var(--hairline);
-    color: var(--ink-muted);
+    margin-top: 2.5rem;
+    padding: 1.25rem 0 1.5rem;
+    border-top: 1px solid var(--navy-line);
     font-size: var(--text-xs);
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--green-bright);
+    font-weight: 600;
+  }
+
+  .footer :global(:focus-visible) {
+    outline-color: #fff;
   }
 </style>
