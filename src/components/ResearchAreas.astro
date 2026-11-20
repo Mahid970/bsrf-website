@@ -34,7 +34,7 @@ const areas = researchAreas.map((a) => ({
             </span>
             <span class="body muted">{a.body}</span>
             <span class="foot">
-              <span class="muted">{a.count === 1 ? '1 publication' : `${a.count} publications`}</span>
+              <span class="muted">{a.count === 0 ? 'Research in progress' : 'See publications'}</span>
               <span class="row-arrow">
                 <Icon name="arrow" size={16} />
               </span>

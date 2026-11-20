@@ -127,7 +127,7 @@ const stats = [
 
   .title {
     margin-top: 1.25rem;
-    font-size: clamp(2.25rem, 1.2rem + 4.6vw, 3.8rem);
+    font-size: clamp(2.25rem, 1.3rem + 4vw, 3.4rem);
   }
 
   .lede {
@@ -310,6 +310,38 @@ const stats = [
 
   .stat-tile .icon-tile {
     order: 1;
+  }
+
+  /* Phones: one compact row of three figures instead of three tall tiles. */
+  @media (max-width: 639px) {
+    .stat-strip {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stat-tile {
+      padding: 1rem 0.85rem;
+    }
+
+    .stat-tile + .stat-tile {
+      border-top: 0;
+      border-left: 1px solid var(--hairline);
+    }
+
+    .stat-tile .icon-tile,
+    .stat-label .muted,
+    .watermark {
+      display: none;
+    }
+
+    .stat-value {
+      margin-top: 0;
+      font-size: 2rem;
+    }
+
+    .stat-label {
+      font-size: var(--text-xs);
+      line-height: 1.3;
+    }
   }
 
   .stat-tile:hover {
