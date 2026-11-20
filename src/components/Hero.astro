@@ -7,8 +7,8 @@ import { getEvents } from '../utils/events';
 import { dateParts, isoDate } from '../utils/format';
 
 const photos = await getLaunchPhotos();
-const main = photos[3]; // full lecture room
-const side = [photos[4], photos[16]]; // GRE session, faculty panel
+const main = photos[0]; // portrait: speaker introducing the chief advisor
+const side = [photos[3], photos[16]]; // landscape: full lecture room, faculty panel
 
 const { upcoming } = await getEvents();
 const next = upcoming[0];
@@ -51,7 +51,7 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
     <div class="media">
       <div class="mosaic">
         <figure class="tile tile-main" data-hero-tile>
-          <Image src={main.src} alt={main.alt} widths={[640, 960, 1280]} sizes="(min-width: 981px) 36vw, 92vw" loading="eager" fetchpriority="high" />
+          <Image src={main.src} alt={main.alt} widths={[480, 720, 960, 1280]} sizes="(min-width: 981px) 30vw, 92vw" loading="eager" fetchpriority="high" />
         </figure>
         {
           side.map((p) => (
@@ -187,9 +187,9 @@ const lines = ['Advancing research in', 'banking, insurance', 'and finance'];
     grid-row: 1 / -1;
   }
 
-  /* Keep the audience, not the ceiling, in view when the tile is narrow. */
+  /* Keep the speaker, not the ceiling, in view. */
   .tile-main :global(img) {
-    object-position: 50% 78%;
+    object-position: 50% 65%;
   }
 
   .tile :global(img) {
