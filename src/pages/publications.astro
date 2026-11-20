@@ -1,0 +1,238 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import { publications, researchAreas, site } from '../data/site';
+
+const years = [...new Set(publications.map((p) => p.year))].sort((a, b) => b - a);
+const byYear = years.map((year) => ({ year, items: publications.filter((p) => p.year === year) }));
+const types = [...new Set(publications.map((p) => p.type))];
+---
+
+<Base title="Publications" description={`Working papers, conference papers and policy briefs by members of ${site.name}.`}>
+  <PageHeader
+    title="Publications"
+    lead="Working papers, conference papers and policy briefs written by forum members with their faculty advisors."
+  />
+
+  <div class="container layout">
+    <div class="main">
+      <div class="filters" role="group" aria-label="Filter by type" data-filters>
+        <button type="button" class="chip" aria-pressed="true" data-filter="all">All</button>
+        {
+          types.map((t) => (
+            <button type="button" class="chip" aria-pressed="false" data-filter={t}>
+              {t}
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        byYear.map((g) => (
+          <section class="year" aria-labelledby={`y-${g.year}`} data-year>
+            <h2 id={`y-${g.year}`}>{g.year}</h2>
+            <ul>
+              {g.items.map((p) => (
+                <li data-type={p.type}>
+                  <p class="type">{p.type}</p>
+                  <h3>{p.url ? <a href={p.url}>{p.title}</a> : p.title}</h3>
+                  <p class="meta">
+                    <span>{p.authors}</span>
+                    <span class="area">{p.area}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    <aside class="side">
+      <div class="card">
+        <h2>Research areas</h2>
+        <ul>
+          {researchAreas.map((a) => <li>{a.title}</li>)}
+        </ul>
+      </div>
+      <div class="card">
+        <h2>Publish with the forum</h2>
+        <p>Members can submit work for review by a faculty advisor before it is listed here.</p>
+        <a class="text-link" href="/#join">How membership works</a>
+      </div>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4rem) var(--section);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .chip {
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ink);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .chip:hover {
+    box-shadow: inset 0 0 0 1px var(--ink);
+  }
+
+  .chip[aria-pressed='true'] {
+    background: var(--ink);
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .year + .year {
+    margin-top: 3rem;
+  }
+
+  .year h2 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--muted);
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  .year ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .year li {
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .year li[hidden] {
+    display: none;
+  }
+
+  .type {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--green);
+    margin-bottom: 0.3rem;
+  }
+
+  h3 {
+    font-size: var(--step-2);
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+
+  h3 a {
+    text-decoration: none;
+  }
+
+  h3 a:hover {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.25rem;
+    font-size: 0.925rem;
+    color: var(--muted);
+  }
+
+  .area {
+    padding-left: 1.25rem;
+    border-left: 1px solid var(--line-strong);
+  }
+
+  /* ---------- sidebar ---------- */
+  .side {
+    display: grid;
+    gap: 1.25rem;
+    position: sticky;
+    top: 7rem;
+  }
+
+  .card {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 0.95rem;
+  }
+
+  .card h2 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+
+  .card ul {
+    display: grid;
+    gap: 0.5rem;
+    padding-left: 1.1rem;
+    color: var(--text);
+  }
+
+  .card li::marker {
+    color: var(--green);
+  }
+
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
+    }
+
+    .side {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .area {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+</style>
+
+<script>
+  const group = document.querySelector<HTMLElement>('[data-filters]');
+  if (group) {
+    const chips = [...group.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const items = [...document.querySelectorAll<HTMLElement>('[data-type]')];
+    const years = [...document.querySelectorAll<HTMLElement>('[data-year]')];
+
+    group.addEventListener('click', (e) => {
+      const chip = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-filter]');
+      if (!chip) return;
+      const value = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+      items.forEach((li) => (li.hidden = value !== 'all' && li.dataset.type !== value));
+      years.forEach((y) => (y.hidden = !y.querySelector('[data-type]:not([hidden])')));
+    });
+  }
+</script>
