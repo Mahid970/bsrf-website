@@ -65,30 +65,36 @@ export const pillars = [
 /** SAMPLE: research areas. Confirm these with the forum's advisors. */
 export const researchAreas = [
   {
+    icon: 'landmark',
     title: 'Banking and financial stability',
     body: 'Capital adequacy, non-performing loans and the health of the banking sector.',
   },
   {
+    icon: 'shield',
     title: 'Insurance and risk management',
     body: 'Life and non-life insurance markets, microinsurance and household risk.',
   },
   {
+    icon: 'users',
     title: 'Financial inclusion',
     body: 'Access to accounts, credit and mobile financial services for underserved people.',
   },
   {
+    icon: 'scale',
     title: 'Islamic banking and finance',
     body: 'Shariah-based products, governance and the performance of Islamic banks.',
   },
   {
+    icon: 'phone',
     title: 'Fintech and digital payments',
     body: 'Mobile banking, digital lending and how new financial technology is regulated.',
   },
   {
+    icon: 'leaf',
     title: 'Sustainable finance',
     body: 'Green banking, climate risk and ESG disclosure in financial institutions.',
   },
-];
+] as const;
 
 /** SAMPLE: publications and working papers. */
 export type Publication = {
