@@ -1,0 +1,147 @@
+---
+import { site, steps } from '../data/site';
+
+const applyHref = site.joinFormUrl || site.facebook;
+const applyLabel = site.joinFormUrl ? 'Fill in the membership form' : 'Apply on Facebook';
+---
+
+<section class="join" id="join" aria-labelledby="join-title">
+  <div class="container grid">
+    <div class="copy">
+      <h2 id="join-title" data-reveal>Become a member</h2>
+      <p data-reveal>
+        {`Membership is open to students and faculty of the ${site.department}. No research experience is needed: the forum teaches the methods as you go.`}
+      </p>
+      <div class="actions" data-reveal>
+        <a class="btn btn-light" href={applyHref} target="_blank" rel="noopener">{applyLabel}</a>
+        {
+          site.email && (
+            <a class="btn btn-outline" href={`mailto:${site.email}`}>
+              Email the forum
+            </a>
+          )
+        }
+      </div>
+    </div>
+
+    <ol class="steps">
+      {
+        steps.map((s, i) => (
+          <li data-reveal>
+            <span class="num" aria-hidden="true">
+              {i + 1}
+            </span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .join {
+    background: var(--navy);
+    color: var(--on-navy-muted);
+    padding-block: var(--section);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 3rem clamp(3rem, 6vw, 6rem);
+    align-items: start;
+  }
+
+  h2 {
+    color: #fff;
+    font-size: var(--step-4);
+    margin-bottom: 1rem;
+  }
+
+  .copy p {
+    font-size: var(--step-1);
+    max-width: 30rem;
+    margin-bottom: 2rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .btn-light {
+    background: #fff;
+    color: var(--navy);
+  }
+
+  .btn-light:hover {
+    background: var(--brand-tint);
+  }
+
+  .btn-outline {
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.35);
+  }
+
+  .btn-outline:hover {
+    box-shadow: inset 0 0 0 1px #fff;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.25rem 2.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .steps li {
+    display: grid;
+    gap: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--navy-line);
+  }
+
+  .num {
+    display: grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    margin-bottom: 0.25rem;
+    border-radius: 50%;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--navy);
+    background: #7fd3ad;
+  }
+
+  h3 {
+    color: #fff;
+    font-size: var(--step-1);
+  }
+
+  .steps p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .join :global(:focus-visible) {
+    outline-color: #fff;
+  }
+
+  @media (max-width: 980px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .steps {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+</style>
