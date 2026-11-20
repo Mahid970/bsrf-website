@@ -4,13 +4,13 @@ import Base from '../layouts/Base.astro';
 
 <Base title="Page not found" description="This page does not exist.">
   <section class="nf container">
-    <p class="pill"><span class="pill-dot" aria-hidden="true"></span>Error 404</p>
-    <h1 class="display">We couldn’t find that page</h1>
+    <span class="chip">Error 404</span>
+    <h1>We couldn’t find that page</h1>
     <p class="lead muted">The link may be out of date or mistyped. Try one of these instead.</p>
     <ul class="links">
       <li><a class="btn btn-primary" href="/">Go to the home page</a></li>
-      <li><a class="btn btn-quiet" href="/events/">See events</a></li>
-      <li><a class="btn btn-quiet" href="/publications/">Browse publications</a></li>
+      <li><a class="btn btn-ghost" href="/events/">See events</a></li>
+      <li><a class="btn btn-ghost" href="/publications/">Browse publications</a></li>
     </ul>
   </section>
 </Base>
@@ -23,13 +23,10 @@ import Base from '../layouts/Base.astro';
     padding-block: clamp(4rem, 3rem + 6vw, 8rem);
   }
 
-  .code {
-    font-size: var(--text-sm);
-    font-weight: 600;
-    color: var(--brand);
-  }
 
   h1 {
+    font-weight: 800;
+    letter-spacing: -0.035em;
     font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.5rem);
     max-width: 18ch;
   }
