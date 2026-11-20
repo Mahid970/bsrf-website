@@ -3,8 +3,10 @@ import type { GetStaticPaths } from 'astro';
 import { Image, getImage } from 'astro:assets';
 import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import Icon from '../../components/Icon.astro';
 import { site } from '../../data/site';
-import { formatDate } from '../../utils/format';
+import { formatDate, isoDate } from '../../utils/format';
 
 export const getStaticPaths = (async () => {
   const events = await getCollection('events');
@@ -13,7 +15,7 @@ export const getStaticPaths = (async () => {
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
-const { title, date, location, summary, cover, coverAlt, gallery } = entry.data;
+const { title, kind, date, time, location, summary, cover, coverAlt, gallery } = entry.data;
 
 const photos = await Promise.all(
   gallery.map(async (p) => ({
@@ -24,38 +26,62 @@ const photos = await Promise.all(
 ---
 
 <Base title={title} description={summary}>
-  <article class="event">
-    <header class="head container">
-      <a class="back" href="/events/">All events</a>
-      <p class="meta" data-reveal="fade">
-        <time datetime={date.toISOString().slice(0, 10)}>{formatDate(date)}</time>
-        <span>{location}</span>
-      </p>
-      <h1 data-reveal="words">{title}</h1>
-      <p class="summary" data-reveal="fade">{summary}</p>
-    </header>
+  <PageHeader title={title} lead={summary} kind={kind} back={{ href: '/events/', label: 'All events' }} />
 
-    <div class="cover container">
-      <div class="cover-frame" style={`view-transition-name: cover-${entry.id}`}>
-        <Image src={cover} alt={coverAlt} layout="full-width" sizes="(min-width: 1240px) 1240px, 100vw" loading="eager" />
-      </div>
-    </div>
-
-    <div class="body container">
-      <div class="prose" data-reveal="fade">
+  <div class="container layout">
+    <article class="main">
+      {
+        cover && (
+          <div class="cover" style={`view-transition-name: cover-${entry.id}`}>
+            <Image src={cover} alt={coverAlt} widths={[640, 960, 1280, 1600]} sizes="(min-width: 1100px) 760px, 92vw" loading="eager" />
+          </div>
+        )
+      }
+      <div class="prose">
         <Content />
       </div>
-    </div>
+    </article>
 
-    {
-      photos.length > 0 && (
-        <section class="gallery container" aria-labelledby="gallery-title">
-          <h2 id="gallery-title" data-reveal="words">
-            {`Photos (${photos.length})`}
-          </h2>
+    <aside class="side" aria-label="Event details">
+      <div class="card">
+        <h2>Event details</h2>
+        <dl>
+          <div>
+            <dt><Icon name="calendar" size={18} /><span class="visually-hidden">Date</span></dt>
+            <dd><time datetime={isoDate(date)}>{formatDate(date)}</time></dd>
+          </div>
+          {
+            time && (
+              <div>
+                <dt>
+                  <Icon name="clock" size={18} />
+                  <span class="visually-hidden">Time</span>
+                </dt>
+                <dd>{time}</dd>
+              </div>
+            )
+          }
+          <div>
+            <dt><Icon name="pin" size={18} /><span class="visually-hidden">Place</span></dt>
+            <dd>{location}</dd>
+          </div>
+        </dl>
+        <p class="ask">
+          Questions about this event?{' '}
+          <a href={site.facebook} target="_blank" rel="noopener">Message us on Facebook</a>
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  {
+    photos.length > 0 && (
+      <section class="gallery section-soft" aria-labelledby="gallery-title">
+        <div class="container">
+          <h2 id="gallery-title">{`Photos (${photos.length})`}</h2>
           <ul class="masonry">
             {photos.map((p) => (
-              <li data-reveal="fade">
+              <li>
                 <button
                   type="button"
                   class="thumb"
@@ -65,117 +91,53 @@ const photos = await Promise.all(
                   data-caption={p.caption ?? ''}
                   aria-label={`Open photo: ${p.caption ?? p.alt}`}
                 >
-                  <Image src={p.src} alt={p.alt} widths={[400, 640, 960]} sizes="(min-width: 1100px) 30vw, (min-width: 640px) 45vw, 92vw" />
+                  <Image src={p.src} alt={p.alt} widths={[400, 640, 960]} sizes="(min-width: 1100px) 380px, (min-width: 640px) 45vw, 92vw" />
                 </button>
               </li>
             ))}
           </ul>
-        </section>
-      )
-    }
-
-    <aside class="next container" data-reveal="fade">
-      <p>Want to be part of the next one?</p>
-      <a href="/#join">See how to join {site.short}</a>
-    </aside>
-  </article>
+        </div>
+      </section>
+    )
+  }
 </Base>
 
 <style>
-  .event {
-    padding-top: 7.5rem;
-    padding-bottom: var(--section);
-  }
-
-  .head {
+  .layout {
     display: grid;
-    gap: 1.25rem;
-    margin-bottom: clamp(2.5rem, 2rem + 3vw, 4rem);
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+    padding-block: clamp(2.5rem, 2rem + 3vw, 4.5rem) var(--section);
   }
 
-  .back {
-    justify-self: start;
-    font-family: var(--font-ui);
-    font-weight: 600;
-    color: var(--blue);
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
-  .back::before {
-    content: '';
-    width: 0.5rem;
-    height: 0.5rem;
-    border-left: 2px solid currentColor;
-    border-bottom: 2px solid currentColor;
-    transform: rotate(45deg);
-    transition: transform 0.4s var(--ease-out);
-  }
-
-  .back:hover::before {
-    transform: translateX(-4px) rotate(45deg);
-  }
-
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.5rem;
-    font-family: var(--font-ui);
-    color: var(--muted);
-  }
-
-  .meta time {
-    color: var(--green-ink);
-    font-weight: 600;
-  }
-
-  h1 {
-    font-size: var(--step-5);
-    letter-spacing: -0.035em;
-    max-width: 14ch;
-  }
-
-  .summary {
-    font-size: var(--step-1);
-    color: var(--ink-soft);
-    max-width: 40rem;
-  }
-
-  .cover-frame {
-    aspect-ratio: 21 / 9;
-    border-radius: var(--radius-l);
+  .cover {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
     overflow: hidden;
-    background: var(--blue-tint);
+    background: var(--brand-tint);
+    margin-bottom: 2.5rem;
   }
 
-  .cover-frame :global(img) {
+  .cover :global(img) {
     width: 100%;
     height: 100%;
     object-fit: cover;
   }
 
-  .body {
-    padding-block: clamp(3rem, 2rem + 4vw, 6rem);
-  }
-
   .prose {
-    max-width: 40rem;
-    margin-inline: auto;
-    font-size: 1.15rem;
+    max-width: 42rem;
+    font-size: 1.075rem;
     line-height: 1.75;
-    color: var(--ink-soft);
   }
 
   .prose :global(> * + *) {
-    margin-top: 1.25em;
+    margin-top: 1.2em;
   }
 
   .prose :global(h2) {
-    margin-top: 2.2em;
+    margin-top: 2em;
     font-size: var(--step-3);
-    color: var(--ink);
   }
 
   .prose :global(ul) {
@@ -183,7 +145,7 @@ const photos = await Promise.all(
   }
 
   .prose :global(li + li) {
-    margin-top: 0.6em;
+    margin-top: 0.5em;
   }
 
   .prose :global(li::marker) {
@@ -192,11 +154,73 @@ const photos = await Promise.all(
 
   .prose :global(strong) {
     color: var(--ink);
-    font-weight: 650;
+    font-weight: 600;
   }
 
   .prose :global(a) {
-    color: var(--blue);
+    color: var(--brand);
+  }
+
+  /* ---------- details card ---------- */
+  .side {
+    position: sticky;
+    top: 7rem;
+  }
+
+  .card {
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg);
+  }
+
+  .card h2 {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0;
+    margin-bottom: 1rem;
+  }
+
+  dl {
+    display: grid;
+    gap: 0.9rem;
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  dl > div {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  dt {
+    flex: none;
+    color: var(--brand);
+    padding-top: 0.15rem;
+  }
+
+  dd {
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.45;
+  }
+
+  .ask {
+    font-size: 0.925rem;
+    color: var(--muted);
+  }
+
+  .ask a {
+    color: var(--brand);
+    font-weight: 600;
+  }
+
+  /* ---------- gallery ---------- */
+  .gallery {
+    padding-block: var(--section);
   }
 
   .gallery h2 {
@@ -205,67 +229,43 @@ const photos = await Promise.all(
   }
 
   .masonry {
-    columns: 3 18rem;
-    column-gap: 1rem;
+    columns: 3 16rem;
+    column-gap: 0.75rem;
     list-style: none;
     padding: 0;
   }
 
   .masonry li {
     break-inside: avoid;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   .thumb {
     display: block;
     width: 100%;
-    border-radius: var(--radius-m);
+    border-radius: var(--radius-s);
     overflow: hidden;
     cursor: zoom-in;
-    background: var(--blue-tint);
+    background: var(--brand-tint);
   }
 
   .thumb :global(img) {
     width: 100%;
-    transition: transform 0.9s var(--ease-out);
+    transition: transform 0.6s var(--ease-out);
   }
 
   .thumb:hover :global(img) {
-    transform: scale(1.05);
+    transform: scale(1.03);
   }
 
-  .next {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-top: clamp(3rem, 2rem + 4vw, 6rem);
-    padding-top: 2rem;
-    border-top: 2px solid var(--ink);
-    font-family: var(--font-ui);
-  }
-
-  .next p {
-    font-size: var(--step-3);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .next a {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--blue);
-  }
-
-  @media (max-width: 880px) {
-    .event {
-      padding-top: 6.5rem;
+  @media (max-width: 900px) {
+    .layout {
+      grid-template-columns: 1fr;
     }
 
-    .cover-frame {
-      aspect-ratio: 4 / 3;
-      border-radius: var(--radius-m);
+    .side {
+      position: static;
+      order: -1;
     }
   }
 </style>
