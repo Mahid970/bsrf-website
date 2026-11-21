@@ -11,9 +11,11 @@ interface Props {
   description?: string;
   /** Path to a social card image inside /public. */
   image?: string;
+  /** The page opens with a full-bleed photo, so the header starts transparent over it. */
+  overlay?: boolean;
 }
 
-const { title, description = site.description, image = '/og-image.jpg' } = Astro.props;
+const { title, description = site.description, image = '/og-image.jpg', overlay = false } = Astro.props;
 
 const fullTitle = title ? `${title} | ${site.short}` : `${site.name} (${site.short}) | ${site.university}`;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -44,8 +46,8 @@ const orgJsonLd = {
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
-    <meta name="theme-color" content="#f7f8fc" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0b0d24" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e110d" media="(prefers-color-scheme: dark)" />
     <meta name="generator" content={Astro.generator} />
     <script is:inline>
       // Pick the theme before anything paints: a choice made with the switch wins, otherwise follow the device.
@@ -80,7 +82,7 @@ const orgJsonLd = {
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
-    <Header />
+    <Header overlay={overlay} />
     <main id="main">
       <slot />
     </main>

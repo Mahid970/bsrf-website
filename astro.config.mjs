@@ -6,16 +6,16 @@ export default defineConfig({
   // Public URL of the deployed site (used for canonical links and social cards).
   site: 'https://bsrf-website.mmahidujjaman.workers.dev',
 
-  // One family for headings and text, downloaded at build time and served from this site.
+  // Inter for everything, downloaded at build time and served from this site.
   fonts: [
     {
       provider: fontProviders.fontsource(),
-      name: 'Schibsted Grotesk',
+      name: 'Inter',
       cssVariable: '--font-sans',
-      weights: ['400 800'],
-      styles: ['normal', 'italic'],
+      weights: ['400 700'],
+      styles: ['normal'],
       subsets: ['latin'],
-      fallbacks: ['system-ui', 'sans-serif'],
+      fallbacks: ['Helvetica Neue', 'Arial', 'sans-serif'],
     },
   ],
 
