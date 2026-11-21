@@ -1,253 +1,49 @@
 ---
-import Icon from './Icon.astro';
-import { publications } from '../data/site';
+import EventCard from './EventCard.astro';
 import { getEvents } from '../utils/events';
-import { dateParts, isoDate } from '../utils/format';
 
-const recent = publications.slice(0, 4);
-const { upcoming } = await getEvents();
-const soon = upcoming.slice(0, 4);
+const { upcoming, past } = await getEvents();
+// Upcoming first; if fewer than three are scheduled, fill with the latest past events.
+const cards = [...upcoming, ...past].slice(0, 3);
 ---
 
 <section class="container section" aria-labelledby="latest-title">
   <div class="section-head reveal">
     <div>
-      <h2 id="latest-title">What’s happening</h2>
-      <p>Upcoming sessions and the latest work from forum members.</p>
+      <h2 id="latest-title">Seminars and workshops for every member</h2>
+      <p>Sessions on research methods, reading circles and talks from faculty. Open to all members.</p>
     </div>
-    <div class="tabs" role="tablist" aria-label="Show" data-tabs>
-      <button type="button" class="tab" role="tab" id="tab-events" aria-controls="panel-events" aria-selected="true">Upcoming events</button>
-      <button type="button" class="tab" role="tab" id="tab-pubs" aria-controls="panel-pubs" aria-selected="false" tabindex="-1">Publications</button>
-    </div>
+    <a class="btn btn-outline" href="/events/">See all events</a>
   </div>
 
-  <div class="card board reveal">
-    <div class="panel" id="panel-events" role="tabpanel" aria-labelledby="tab-events">
-      {
-        soon.length ? (
-          <ul class="list">
-            {soon.map((e) => {
-              const d = dateParts(e.data.date);
-              return (
-                <li>
-                  <a class="item" href={`/events/${e.id}/`}>
-                    <time class="cal" datetime={isoDate(e.data.date)}>
-                      <span class="m">{d.month}</span>
-                      <span class="d">{d.day}</span>
-                    </time>
-                    <span class="body">
-                      <span class="chip">{e.data.kind}</span>
-                      <span class="title">{e.data.title}</span>
-                      <span class="meta muted">
-                        {e.data.time && (
-                          <span>
-                            <Icon name="clock" size={15} />
-                            {e.data.time}
-                          </span>
-                        )}
-                        <span>
-                          <Icon name="pin" size={15} />
-                          {e.data.location}
-                        </span>
-                      </span>
-                    </span>
-                    <span class="go" aria-hidden="true">
-                      <Icon name="chevron" size={18} />
-                    </span>
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        ) : (
-          <p class="empty muted">No events are scheduled yet. Follow the forum on Facebook to hear about the next one first.</p>
-        )
-      }
-      <p class="foot"><a class="link" href="/events/">See all events</a></p>
-    </div>
-
-    <div class="panel" id="panel-pubs" role="tabpanel" aria-labelledby="tab-pubs" hidden>
-      <ul class="list">
-        {
-          recent.map((p) => (
-            <li>
-              <div class="item static">
-                <span class="year" aria-hidden="true">
-                  <Icon name="document" size={20} />
-                </span>
-                <span class="body">
-                  <span class="chips">
-                    <span class="chip">{p.type}</span>
-                    <span class="chip chip-neutral">{p.year}</span>
-                  </span>
-                  <span class="title">{p.url ? <a class="link plain" href={p.url}>{p.title}</a> : p.title}</span>
-                  <span class="meta muted">
-                    <span>{p.authors}</span>
-                    <span>{p.area}</span>
-                  </span>
-                </span>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-      <p class="foot"><a class="link" href="/publications/">See all publications</a></p>
-    </div>
-  </div>
+  <ul class="grid">
+    {
+      cards.map((e) => (
+        <li class="reveal">
+          <EventCard entry={e} />
+        </li>
+      ))
+    }
+  </ul>
 </section>
 
 <style>
-  .board {
-    overflow: hidden;
-  }
-
-  .list {
+  .grid {
+    display: grid;
+    gap: 2rem 1.5rem;
     list-style: none;
     padding: 0;
   }
 
-  .list li + li {
-    border-top: 1px solid var(--line);
-  }
-
-  .item {
-    display: flex;
-    align-items: center;
-    gap: 1.1rem;
-    padding: 1.15rem clamp(1rem, 0.5rem + 2vw, 1.75rem);
-    transition: background-color 220ms var(--ease);
-  }
-
-  a.item:hover {
-    background: color-mix(in srgb, var(--brand-wash) 60%, transparent);
-  }
-
-  .body {
-    display: grid;
-    justify-items: start;
-    gap: 0.35rem;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .title {
-    font-size: 1.08rem;
-    font-weight: 650;
-    line-height: 1.35;
-  }
-
-  .plain {
-    color: inherit;
-  }
-
-  .meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1.25rem;
-    font-size: var(--text-sm);
-  }
-
-  .meta span {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-  }
-
-  .go {
-    display: grid;
-    place-items: center;
-    width: 2.2rem;
-    height: 2.2rem;
-    flex-shrink: 0;
-    border-radius: 50%;
-    border: 1px solid var(--line);
-    color: var(--muted);
-    transition:
-      background-color 220ms var(--ease),
-      border-color 220ms var(--ease),
-      color 220ms var(--ease),
-      transform 260ms var(--ease);
-  }
-
-  a.item:hover .go {
-    background: var(--brand);
-    border-color: var(--brand);
-    color: #fff;
-    transform: translateX(3px);
-  }
-
-  .year {
-    display: grid;
-    place-items: center;
-    width: 3.6rem;
-    height: 3.6rem;
-    flex-shrink: 0;
-    border-radius: 14px;
-    background: var(--brand-wash);
-    color: var(--brand);
-  }
-
-  .empty {
-    padding: 1.5rem clamp(1rem, 0.5rem + 2vw, 1.75rem);
-  }
-
-  .foot {
-    padding: 1rem clamp(1rem, 0.5rem + 2vw, 1.75rem);
-    border-top: 1px solid var(--line);
-    background: color-mix(in srgb, var(--sunk) 50%, transparent);
-    font-size: var(--text-sm);
-  }
-
-  .panel:not([hidden]) {
-    animation: panel-in 360ms var(--ease);
-  }
-
-  @keyframes panel-in {
-    from {
-      opacity: 0;
-      transform: translateY(6px);
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 560px) {
-    .go {
-      display: none;
-    }
-
-    .year {
-      display: none;
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
   }
 </style>
-
-<script>
-  // Accessible tabs: click or use the arrow keys to switch panels.
-  const list = document.querySelector<HTMLElement>('[data-tabs]');
-  if (list) {
-    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
-    const select = (tab: HTMLButtonElement) => {
-      tabs.forEach((t) => {
-        const on = t === tab;
-        t.setAttribute('aria-selected', String(on));
-        t.tabIndex = on ? 0 : -1;
-        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
-        if (panel) panel.hidden = !on;
-      });
-    };
-    tabs.forEach((t, i) => {
-      t.addEventListener('click', () => select(t));
-      t.addEventListener('keydown', (e) => {
-        if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-        const next = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length];
-        select(next);
-        next.focus();
-      });
-    });
-  }
-</script>
