@@ -4,20 +4,23 @@ import mark from '../assets/brand/bsrf-mark.png';
 import Icon from './Icon.astro';
 import { nav, site } from '../data/site';
 
+interface Props {
+  /** Starts transparent with white text over a full-bleed photo. */
+  overlay?: boolean;
+}
+
+const { overlay = false } = Astro.props;
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
 ---
 
-<header class="site-header" data-header>
+<header class:list={['site-header', { overlay }]} data-header>
   <div class="container bar">
-    <a class="lockup" href="/" aria-label={`${site.name}, home`}>
+    <a class="logo" href="/" aria-label={`${site.name}, home`}>
       <span class="mark">
-        <Image src={mark} alt="" width={42} height={42} densities={[1, 2]} loading="eager" />
+        <Image src={mark} alt="" width={40} height={40} densities={[1, 2]} loading="eager" />
       </span>
-      <span class="words">
-        <span class="short">{site.short}</span>
-        <span class="long">{site.name}</span>
-      </span>
+      <span class="word">{site.short}</span>
     </a>
 
     <nav class="nav" aria-label="Main">
@@ -31,19 +34,14 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     </nav>
 
     <div class="tools">
-      <button type="button" class="switch" data-theme-toggle aria-label="Dark theme" aria-pressed="false">
-        <span class="knob" aria-hidden="true">
-          <span class="sun"><Icon name="sun" size={13} /></span>
-          <span class="moon"><Icon name="moon" size={13} /></span>
-        </span>
+      <button type="button" class="theme" data-theme-toggle aria-label="Dark theme" aria-pressed="false">
+        <span class="sun"><Icon name="sun" size={18} /></span>
+        <span class="moon"><Icon name="moon" size={18} /></span>
       </button>
-      <a class="btn btn-primary btn-sm join" href="/#join">
-        Join
-        <span class="go"><Icon name="chevron" size={16} /></span>
-      </a>
+      <a class="btn btn-lime btn-sm cta" href="/#join">Become a member</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
         <span class="visually-hidden" data-menu-label>Open menu</span>
-        <span class="burger" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="burger" aria-hidden="true"><span></span><span></span></span>
       </button>
     </div>
   </div>
@@ -54,13 +52,13 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
         nav.map((item) => (
           <a class="m-link" href={item.href}>
             {item.label}
+            <span class="round">
+              <Icon name="chevron" size={14} />
+            </span>
           </a>
         ))
       }
-      <a class="btn btn-primary m-join" href="/#join">
-        Become a member
-        <span class="go"><Icon name="chevron" size={16} /></span>
-      </a>
+      <a class="btn btn-lime m-cta" href="/#join">Become a member</a>
     </nav>
   </div>
 </header>
@@ -70,21 +68,44 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     position: sticky;
     top: 0;
     z-index: 50;
-    border-bottom: 1px solid transparent;
+    color: var(--ink);
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    border-bottom: 1px solid var(--line);
     transition:
-      background-color 260ms var(--ease),
-      border-color 260ms var(--ease);
+      background-color 280ms var(--ease),
+      border-color 280ms var(--ease),
+      color 280ms var(--ease);
   }
 
-  /* Transparent at the top; a solid bar with a hairline once the page moves. */
-  :global(:root[data-scrolled='true']) .site-header,
-  .site-header.menu-open {
-    background: color-mix(in srgb, var(--bg) 92%, transparent);
+  @media (min-width: 768px) {
+    .site-header {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+  }
+
+  /* Over the opening photo: transparent, white text, a faint white rule. */
+  .overlay {
+    position: fixed;
+    left: 0;
+    right: 0;
+    color: #fff;
+    background: transparent;
+    border-bottom-color: rgb(255 255 255 / 0.22);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  /* Once the page scrolls past the top it turns into the normal solid bar. */
+  :global(:root[data-scrolled='true']) .overlay,
+  .overlay.menu-open {
+    color: var(--ink);
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
     border-bottom-color: var(--line);
   }
 
   @media (min-width: 768px) {
-    :global(:root[data-scrolled='true']) .site-header {
+    :global(:root[data-scrolled='true']) .overlay {
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
     }
@@ -94,167 +115,129 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    height: 4.5rem;
+    height: 5rem;
   }
 
-  /* ---------- lockup ---------- */
-  .lockup {
+  /* ---------- logo ---------- */
+  .logo {
     display: inline-flex;
     align-items: center;
-    gap: 0.7rem;
+    gap: 0.6rem;
     flex-shrink: 0;
   }
 
   .mark {
     display: grid;
     place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 2.6rem;
+    height: 2.6rem;
     border-radius: 50%;
+    background: #fff;
     transition: transform 400ms var(--ease);
   }
 
   .mark :global(img) {
-    width: 42px;
-    height: 42px;
-  }
-
-  :global(:root[data-theme='dark']) .mark {
-    background: #fff;
-  }
-
-  :global(:root[data-theme='dark']) .mark :global(img) {
     width: 34px;
     height: 34px;
   }
 
-  .lockup:hover .mark {
-    transform: rotate(-10deg);
+  .logo:hover .mark {
+    transform: rotate(-12deg);
   }
 
-  .words {
-    display: grid;
-    line-height: 1.1;
-  }
-
-  .short {
-    font-size: 1.3rem;
+  .word {
+    font-size: 1.45rem;
     font-weight: 800;
-    letter-spacing: -0.03em;
-  }
-
-  .long {
-    font-size: 0.72rem;
-    color: var(--muted);
+    letter-spacing: -0.04em;
   }
 
   /* ---------- nav ---------- */
   .nav {
     display: none;
     align-items: center;
-    gap: 0.2rem;
+    gap: 2rem;
     margin-inline: auto;
   }
 
   .nav-link {
     position: relative;
-    padding: 0.5rem 0.9rem;
-    border-radius: 999px;
+    padding: 0.4rem 0;
     font-size: 0.95rem;
-    font-weight: 550;
-    color: var(--muted);
-    transition:
-      background-color 200ms var(--ease),
-      color 200ms var(--ease);
+    font-weight: 500;
+    opacity: 0.85;
+    transition: opacity 200ms var(--ease);
   }
 
-  .nav-link:hover {
-    color: var(--ink);
-    background: var(--sunk);
-  }
-
+  .nav-link:hover,
   .nav-link[aria-current='page'] {
-    color: var(--ink);
+    opacity: 1;
   }
 
-  /* A small green dot marks the page you are on. */
+  /* A short lime bar grows under the link you point at, and stays on the current page. */
   .nav-link::after {
     content: '';
     position: absolute;
-    left: 50%;
-    bottom: 0.15rem;
-    width: 5px;
-    height: 5px;
-    margin-left: -2.5px;
-    border-radius: 50%;
-    background: var(--green-bright);
-    transform: scale(0);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--lime);
+    transform: scaleX(0);
     transition: transform 260ms var(--ease);
   }
 
+  .nav-link:hover::after,
   .nav-link[aria-current='page']::after {
-    transform: scale(1);
+    transform: scaleX(1);
   }
 
   /* ---------- tools ---------- */
   .tools {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     margin-left: auto;
   }
 
-  /* Theme switch: a knob slides across a track and swaps sun for moon. */
-  .switch {
-    position: relative;
-    width: 3rem;
-    height: 1.75rem;
-    flex-shrink: 0;
-    border-radius: 999px;
-    background: var(--sunk);
-    border: 1px solid var(--line);
-    transition: background-color 260ms var(--ease);
-  }
-
-  .knob {
-    position: absolute;
-    top: 2px;
-    left: 2px;
+  .theme {
     display: grid;
     place-items: center;
-    width: calc(1.75rem - 6px);
-    height: calc(1.75rem - 6px);
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    background: var(--surface);
-    color: var(--ink);
-    box-shadow: 0 1px 3px rgb(18 20 58 / 0.25);
-    transition: transform 320ms var(--ease);
+    border: 1px solid currentColor;
+    opacity: 0.8;
+    transition:
+      opacity 200ms var(--ease),
+      background-color 200ms var(--ease),
+      color 200ms var(--ease),
+      border-color 200ms var(--ease);
   }
 
-  .knob > span {
+  .theme:hover {
+    opacity: 1;
+    background: var(--lime);
+    border-color: var(--lime);
+    color: var(--on-lime);
+  }
+
+  .theme > span {
     grid-area: 1 / 1;
     display: grid;
     transition:
-      opacity 200ms var(--ease),
-      transform 320ms var(--ease);
+      transform 360ms var(--ease),
+      opacity 200ms var(--ease);
   }
 
   .moon {
     opacity: 0;
-    transform: rotate(-90deg);
-  }
-
-  :global(:root[data-theme='dark']) .switch {
-    background: var(--brand-wash);
-  }
-
-  :global(:root[data-theme='dark']) .knob {
-    transform: translateX(1.25rem);
+    transform: rotate(-90deg) scale(0.6);
   }
 
   :global(:root[data-theme='dark']) .sun {
     opacity: 0;
-    transform: rotate(90deg);
+    transform: rotate(90deg) scale(0.6);
   }
 
   :global(:root[data-theme='dark']) .moon {
@@ -262,25 +245,19 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     transform: none;
   }
 
-  .switch:hover .knob {
-    box-shadow:
-      0 0 0 4px color-mix(in srgb, var(--brand) 18%, transparent),
-      0 1px 3px rgb(18 20 58 / 0.25);
-  }
-
   .menu-toggle {
     display: grid;
     place-items: center;
-    width: 2.6rem;
-    height: 2.6rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border-radius: 50%;
-    border: 1px solid var(--line);
-    background: var(--surface);
+    background: var(--lime);
+    color: var(--on-lime);
   }
 
   .burger {
     display: grid;
-    gap: 4px;
+    gap: 5px;
     width: 16px;
   }
 
@@ -288,25 +265,19 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     display: block;
     height: 2px;
     border-radius: 2px;
-    background: var(--ink);
-    transition:
-      transform 300ms var(--ease),
-      opacity 200ms var(--ease);
+    background: currentColor;
+    transition: transform 300ms var(--ease);
   }
 
-  .menu-open .burger span:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
+  .menu-open .burger span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
   }
 
-  .menu-open .burger span:nth-child(2) {
-    opacity: 0;
+  .menu-open .burger span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
   }
 
-  .menu-open .burger span:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
-  }
-
-  @media (min-width: 960px) {
+  @media (min-width: 1000px) {
     .nav {
       display: flex;
     }
@@ -320,14 +291,8 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     }
   }
 
-  @media (max-width: 959px) {
-    .join {
-      display: none;
-    }
-  }
-
-  @media (max-width: 420px) {
-    .long {
+  @media (max-width: 999px) {
+    .cta {
       display: none;
     }
   }
@@ -338,12 +303,13 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     left: 0;
     right: 0;
     top: 100%;
-    padding: 0.75rem 0 1.25rem;
+    padding: 0.5rem 0 1.5rem;
     background: var(--bg);
+    color: var(--ink);
     border-bottom: 1px solid var(--line);
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--shadow);
     clip-path: inset(0 0 100% 0);
-    transition: clip-path 360ms var(--ease);
+    transition: clip-path 380ms var(--ease);
   }
 
   .mobile-menu[hidden] {
@@ -361,14 +327,17 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
   }
 
   .m-link {
-    padding: 0.85rem 0.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
     border-bottom: 1px solid var(--line);
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 600;
   }
 
-  .m-join {
-    margin-top: 1rem;
+  .m-cta {
+    margin-top: 1.25rem;
   }
 </style>
 
@@ -378,7 +347,7 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
   // Solid bar once the page has moved: one attribute flip, not one per scroll event.
   let lifted: boolean | null = null;
   const onScroll = () => {
-    const next = window.scrollY > 8;
+    const next = window.scrollY > 24;
     if (next !== lifted) {
       lifted = next;
       if (next) root.dataset.scrolled = 'true';
@@ -388,10 +357,10 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Theme switch. The choice is kept on this device only.
+  // Theme button. The choice is kept on this device only.
   const themeBtn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
-  const syncSwitch = () => themeBtn?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
-  syncSwitch();
+  const sync = () => themeBtn?.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
+  sync();
   themeBtn?.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     root.dataset.theme = next;
@@ -400,7 +369,7 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
     } catch {
       // Storage blocked: the switch still works for this visit.
     }
-    syncSwitch();
+    sync();
   });
 
   // Mobile menu.
@@ -420,7 +389,7 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
       else
         window.setTimeout(() => {
           if (!open) menu.hidden = true;
-        }, 360);
+        }, 380);
     };
 
     toggle.addEventListener('click', () => setOpen(!open));
@@ -433,7 +402,7 @@ const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href)
         toggle.focus();
       }
     });
-    window.matchMedia('(min-width: 960px)').addEventListener('change', (e) => {
+    window.matchMedia('(min-width: 1000px)').addEventListener('change', (e) => {
       if (e.matches && open) setOpen(false);
     });
   }
