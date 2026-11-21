@@ -1,182 +1,170 @@
 ---
+import { Image } from 'astro:assets';
 import Icon from './Icon.astro';
 import { site, steps } from '../data/site';
+import { getLaunchPhotos } from '../data/photos';
 
+const photos = await getLaunchPhotos();
+const icons = ['join', 'users', 'knowledge', 'document'] as const;
+const cards = steps.map((s, i) => ({ ...s, icon: icons[i], num: String(i + 1).padStart(2, '0') }));
+// Steps run 1–2 then a photo on the left, a photo then 3–4 on the right.
+const left = { steps: cards.slice(0, 2), photo: photos[5] };
+const right = { steps: cards.slice(2), photo: photos[8] };
 const applyHref = site.joinFormUrl || site.facebook;
 const applyLabel = site.joinFormUrl ? 'Fill in the membership form' : 'Apply on Facebook';
 ---
 
-<section class="join" id="join" aria-labelledby="join-title">
-  <div class="container section grid">
-    <div class="intro reveal">
-      <p class="kicker">
-        <span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-        Membership
-      </p>
-      <h2 id="join-title">Becoming a member</h2>
-      <p class="muted">
-        {`Open to students and faculty of the ${site.department}. You don’t need research experience: the forum teaches the methods as you go.`}
-      </p>
-      <div class="actions">
-        <a class="btn btn-primary" href={applyHref} target="_blank" rel="noopener">
-          {applyLabel}
-          <span class="go"><Icon name="chevron" size={17} /></span>
-        </a>
-        {
-          site.email && (
-            <a class="btn btn-ghost" href={`mailto:${site.email}`}>
-              <Icon name="mail" size={17} />
-              Email the forum
-            </a>
-          )
-        }
+<section class="container section" id="join" aria-labelledby="join-title">
+  <div class="section-head center reveal">
+    <h2 id="join-title">How BSRF membership works</h2>
+  </div>
+
+  <div class="cols">
+    <div class="col">
+      {
+        left.steps.map((s) => (
+          <div class="step cream reveal">
+            <span class="icon">
+              <Icon name={s.icon} size={26} />
+            </span>
+            <span class="text">
+              <h3>{s.title}</h3>
+              <span class="body">{s.body}</span>
+            </span>
+            <span class="num" aria-hidden="true">
+              {s.num}
+            </span>
+          </div>
+        ))
+      }
+      <div class="photo tall reveal">
+        <Image src={left.photo.src} alt={left.photo.alt} widths={[480, 720, 960]} sizes="(min-width: 900px) 540px, 92vw" />
       </div>
     </div>
 
-    <ol class="steps reveal">
+    <div class="col">
+      <div class="photo tall reveal">
+        <Image src={right.photo.src} alt={right.photo.alt} widths={[480, 720, 960]} sizes="(min-width: 900px) 540px, 92vw" />
+      </div>
       {
-        steps.map((s, i) => (
-          <li class="step">
-            <span class="num" aria-hidden="true">
-              {i + 1}
+        right.steps.map((s) => (
+          <div class="step cream reveal">
+            <span class="icon">
+              <Icon name={s.icon} size={26} />
             </span>
-            <div class="step-text">
+            <span class="text">
               <h3>{s.title}</h3>
-              <p class="muted">{s.body}</p>
-            </div>
-          </li>
+              <span class="body">{s.body}</span>
+            </span>
+            <span class="num" aria-hidden="true">
+              {s.num}
+            </span>
+          </div>
         ))
       }
-    </ol>
+    </div>
+  </div>
+
+  <div class="apply reveal">
+    <a class="btn btn-lime" href={applyHref} target="_blank" rel="noopener">{applyLabel}</a>
+    {
+      site.email && (
+        <a class="btn btn-outline" href={`mailto:${site.email}`}>
+          Email the forum
+        </a>
+      )
+    }
   </div>
 </section>
 
 <style>
-  .join {
-    background: linear-gradient(180deg, var(--bg), var(--green-wash));
-  }
-
-  .grid {
+  .cols {
     display: grid;
-    gap: 3rem;
-    align-items: start;
-  }
-
-  @media (min-width: 1024px) {
-    .grid {
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-      gap: 5rem;
-    }
-  }
-
-  .intro {
-    display: grid;
-    justify-items: start;
     gap: 1rem;
   }
 
-  @media (min-width: 1024px) {
-    .intro {
-      position: sticky;
-      top: 7rem;
+  @media (min-width: 900px) {
+    .cols {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
     }
   }
 
-  h2 {
-    font-size: var(--text-2xl);
-  }
-
-  .intro .muted {
-    max-width: 30rem;
-  }
-
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 0.75rem;
-  }
-
-  /* ---------- steps: numbered circles on one line ---------- */
-  .steps {
-    position: relative;
+  .col {
     display: grid;
-    gap: 0.75rem;
-    list-style: none;
-    padding: 0;
-  }
-
-  .steps::before {
-    content: '';
-    position: absolute;
-    left: calc(1.25rem + 1.5rem - 1px);
-    top: 2.5rem;
-    bottom: 2.5rem;
-    width: 2px;
-    background: linear-gradient(var(--brand), var(--green-bright));
-    opacity: 0.35;
+    gap: 1rem;
+    align-content: start;
   }
 
   .step {
-    position: relative;
     display: flex;
+    align-items: center;
     gap: 1.25rem;
-    align-items: flex-start;
-    padding: 1.25rem;
-    border: 1px solid transparent;
+    padding: 1.4rem 1.5rem;
     border-radius: var(--r);
+    border: 1px solid var(--cream-line);
     transition:
-      background-color 260ms var(--ease),
       border-color 260ms var(--ease),
-      box-shadow 260ms var(--ease);
+      transform 320ms var(--ease),
+      box-shadow 320ms var(--ease);
   }
 
   .step:hover {
-    background: var(--surface);
-    border-color: var(--line);
-    box-shadow: var(--shadow-soft);
+    border-color: var(--olive);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
   }
 
-  .num {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 3rem;
-    height: 3rem;
+  .icon {
     flex-shrink: 0;
-    border-radius: 50%;
-    border: 2px solid var(--brand);
-    background: var(--surface);
-    color: var(--brand);
-    font-weight: 800;
-    font-size: 1.1rem;
-    font-variant-numeric: tabular-nums;
-    transition:
-      background-color 260ms var(--ease),
-      color 260ms var(--ease),
-      transform 360ms var(--ease);
+    color: var(--ink);
+    transition: transform 360ms var(--ease);
   }
 
-  .step:hover .num {
-    background: var(--brand);
-    color: #fff;
-    transform: scale(1.06);
+  .step:hover .icon {
+    transform: rotate(-8deg) scale(1.08);
   }
 
-  :global(:root[data-theme='dark']) .step:hover .num {
-    color: #0b0d24;
-  }
-
-  .step-text {
-    padding-top: 0.3rem;
+  .text {
+    display: grid;
+    gap: 0.3rem;
+    flex: 1;
+    min-width: 0;
   }
 
   h3 {
-    font-size: var(--text-lg);
+    font-size: 1.1rem;
   }
 
-  .step-text p {
-    margin-top: 0.35rem;
-    max-width: 30rem;
+  .body {
+    font-size: 0.925rem;
+    line-height: 1.5;
+  }
+
+  .num {
+    flex-shrink: 0;
+    color: var(--olive);
+    font-size: 1.6rem;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+
+  .apply {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+
+  .tall {
+    aspect-ratio: 16 / 9.5;
+  }
+
+  .photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 </style>
