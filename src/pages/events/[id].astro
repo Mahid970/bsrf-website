@@ -116,7 +116,7 @@ const photos = await Promise.all(
     border: 1px solid var(--line);
     border-radius: var(--r);
     overflow: hidden;
-    background: var(--brand-wash);
+    background: var(--cream);
     margin-bottom: 2.5rem;
   }
 
@@ -139,7 +139,7 @@ const photos = await Promise.all(
   .prose :global(h2) {
     margin-top: 2em;
     letter-spacing: -0.02em;
-    font-size: var(--text-xl);
+    font-size: 1.5rem;
   }
 
   .prose :global(ul) {
@@ -151,7 +151,7 @@ const photos = await Promise.all(
   }
 
   .prose :global(li::marker) {
-    color: var(--brand);
+    color: var(--ink);
   }
 
   .prose :global(strong) {
@@ -160,7 +160,7 @@ const photos = await Promise.all(
   }
 
   .prose :global(a) {
-    color: var(--brand);
+    color: var(--ink);
   }
 
   /* ---------- details card ---------- */
@@ -173,12 +173,12 @@ const photos = await Promise.all(
     padding: 1.5rem;
     border: 1px solid var(--line);
     border-radius: var(--r);
-    background: var(--surface);
-    box-shadow: var(--shadow-soft);
+    background: var(--bg);
+    box-shadow: var(--shadow);
   }
 
   .card h2 {
-    font-size: var(--text-sm);
+    font-size: 0.875rem;
     font-weight: 700;
     margin-bottom: 1rem;
   }
@@ -204,8 +204,8 @@ const photos = await Promise.all(
     width: 2rem;
     height: 2rem;
     border-radius: 8px;
-    background: var(--brand-wash);
-    color: var(--brand);
+    background: var(--cream);
+    color: var(--ink);
   }
 
   dl > div {
@@ -224,19 +224,19 @@ const photos = await Promise.all(
   }
 
   .ask a {
-    color: var(--brand);
+    color: var(--ink);
     font-weight: 650;
   }
 
   /* ---------- gallery ---------- */
   .gallery {
     padding-block: var(--section);
-    background: var(--sunk);
+    background: var(--soft);
   }
 
   .gallery h2 {
     letter-spacing: -0.02em;
-    font-size: var(--text-3xl);
+    font-size: var(--h2);
     margin-bottom: 2rem;
   }
 
@@ -256,10 +256,10 @@ const photos = await Promise.all(
     display: block;
     width: 100%;
     border: 1px solid var(--line);
-    border-radius: var(--r-sm);
+    border-radius: 12px;
     overflow: hidden;
     cursor: zoom-in;
-    background: var(--brand-wash);
+    background: var(--cream);
   }
 
   .thumb :global(img) {

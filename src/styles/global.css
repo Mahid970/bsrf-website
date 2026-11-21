@@ -385,6 +385,98 @@ a:hover .photo :where(img),
   color: #0e110d;
 }
 
+/* ---------- small shared pieces for inner pages ---------- */
+.muted {
+  color: var(--muted);
+}
+
+/* White panel with a hairline border. */
+.panel {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+
+/* Small pill label: event type, publication type. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.7rem;
+  border-radius: 999px;
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  color: var(--olive-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.chip-neutral {
+  background: var(--soft);
+  border-color: var(--line);
+  color: var(--muted);
+}
+
+/* Calendar block: big day over the month. */
+.cal {
+  display: grid;
+  place-items: center;
+  width: 3.75rem;
+  flex-shrink: 0;
+  padding: 0.5rem 0 0.55rem;
+  border-radius: 14px;
+  background: var(--cream);
+  border: 1px solid var(--cream-line);
+  line-height: 1.05;
+}
+
+.cal .m {
+  order: 2;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--olive-text);
+}
+
+.cal .d {
+  order: 1;
+  color: var(--ink);
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Filter pills on a soft track; the chosen one turns lime. */
+.tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  background: var(--soft);
+}
+
+.tab {
+  padding: 0.5rem 1.05rem;
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition:
+    background-color 220ms var(--ease),
+    color 220ms var(--ease);
+}
+
+.tab:hover {
+  color: var(--ink);
+}
+
+.tab[aria-selected='true'],
+.tab[aria-pressed='true'] {
+  background: var(--lime);
+  color: var(--on-lime);
+}
+
 /* ---------- accessibility ---------- */
 .visually-hidden {
   position: absolute !important;

@@ -50,7 +50,7 @@ const { title, lead, back, kind } = Astro.props;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    font-size: var(--text-sm);
+    font-size: 0.875rem;
     color: var(--muted);
   }
 
@@ -62,25 +62,25 @@ const { title, lead, back, kind } = Astro.props;
   }
 
   .crumbs a {
-    color: var(--brand);
+    color: var(--ink);
     font-weight: 600;
   }
 
   .crumbs a:hover {
     text-decoration: underline;
-    text-decoration-color: var(--green-bright);
+    text-decoration-color: var(--olive);
     text-underline-offset: 0.25em;
   }
 
   h1 {
     max-width: 20ch;
-    font-size: clamp(2.2rem, 1.4rem + 3.2vw, 3.4rem);
-    font-weight: 800;
-    letter-spacing: -0.035em;
+    font-size: var(--h1);
+    font-weight: 600;
+    letter-spacing: -0.03em;
   }
 
   .lead {
-    max-width: 44rem;
-    font-size: 1.15rem;
+    max-width: 40rem;
+    font-size: 1.1rem;
   }
 </style>
