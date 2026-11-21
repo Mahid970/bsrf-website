@@ -20,6 +20,7 @@ const paths = {
     '<path d="M14.5 8.5H16V5.6a17 17 0 0 0-2.2-.1c-2.2 0-3.7 1.4-3.7 3.9v2.1H7.8v3.2h2.3v6.8h2.8v-6.8h2.3l.4-3.2h-2.7V9.7c0-.9.3-1.2 1.6-1.2Z"/>',
   external: '<path d="M14 4.5h5.5V10"/><path d="m19.5 4.5-8 8"/><path d="M17 13.5v5a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 4 18.5v-10A1.5 1.5 0 0 1 5.5 7h5"/>',
   arrow: '<path d="M7 17 17 7"/><path d="M8 7h9v9"/>',
+  check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
   chevron: '<path d="m9 6 6 6-6 6"/>',
   sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2"/><path d="M12 19.5v2"/><path d="m5.3 5.3 1.4 1.4"/><path d="m17.3 17.3 1.4 1.4"/><path d="M2.5 12h2"/><path d="M19.5 12h2"/><path d="m5.3 18.7 1.4-1.4"/><path d="m17.3 6.7 1.4-1.4"/>',
   moon: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5Z"/>',
@@ -43,9 +44,11 @@ interface Props {
   size?: number;
   label?: string;
   class?: string;
+  /** Stroke width; tiny icons read better a little heavier. */
+  stroke?: number;
 }
 
-const { name, size = 24, label, class: className } = Astro.props;
+const { name, size = 24, label, class: className, stroke = 1.6 } = Astro.props;
 const filled = name === 'facebook';
 ---
 
@@ -56,7 +59,7 @@ const filled = name === 'facebook';
   viewBox="0 0 24 24"
   fill={filled ? 'currentColor' : 'none'}
   stroke={filled ? 'none' : 'currentColor'}
-  stroke-width="1.6"
+  stroke-width={stroke}
   stroke-linecap="round"
   stroke-linejoin="round"
   role={label ? 'img' : undefined}
