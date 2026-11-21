@@ -1,0 +1,85 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { getLaunchPhotos } from '../data/photos';
+
+const photos = await getLaunchPhotos();
+
+const programs = [
+  { title: 'Faculty-guided research groups', href: '#research', photo: photos[16] },
+  { title: 'Seminars, workshops and reading circles', href: '/events/', photo: photos[1] },
+  { title: 'Guidance for higher study abroad', href: '/events/forum-launch/', photo: photos[4] },
+];
+---
+
+<section class="container section" aria-labelledby="programs-title">
+  <div class="section-head reveal">
+    <div>
+      <h2 id="programs-title">Programmes that grow your research</h2>
+      <p>From first-year students to final-year researchers, members learn by doing, alongside faculty who guide every step.</p>
+    </div>
+    <a class="btn btn-outline" href="/events/">See all events</a>
+  </div>
+
+  <ul class="grid">
+    {
+      programs.map((p) => (
+        <li class="reveal">
+          <a class="card" href={p.href}>
+            <span class="photo">
+              <Image src={p.photo.src} alt={p.photo.alt} widths={[400, 640, 800]} sizes="(min-width: 900px) 360px, 92vw" />
+            </span>
+            <span class="foot">
+              <h3>{p.title}</h3>
+              <span class="round">
+                <Icon name="chevron" size={14} />
+              </span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 1.5rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .card {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .photo {
+    aspect-ratio: 1 / 1.08;
+  }
+
+  .foot {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  h3 {
+    font-size: 1.15rem;
+    max-width: 16rem;
+  }
+</style>
