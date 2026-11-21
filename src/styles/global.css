@@ -21,6 +21,7 @@
   --lime-strong: #c8e651;
   --on-lime: #0e110d;
   --olive: #8fa347;
+  --olive-text: #5a6d1f; /* olive that passes contrast as small text */
   --footer: #0e110d;
   --on-footer: #f2f4ee;
   --on-footer-muted: #a3a79c;
@@ -43,6 +44,7 @@
   --lime-strong: #e6fb8a;
   --on-lime: #0e110d;
   --olive: #b8cc6c;
+  --olive-text: #c6d986;
   --footer: #070806;
   --on-footer: #f2f4ee;
   --on-footer-muted: #a3a79c;
