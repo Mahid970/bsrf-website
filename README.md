@@ -2,7 +2,7 @@
 
 Official website of the **BankSure Scientific Research Forum (BSRF)**, a research platform of faculty members and students of the Department of Banking and Insurance, University of Chittagong.
 
-Built with [Astro](https://astro.build) as a fully static site, with [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for smooth scrolling and light motion, and hosted for free on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/). The look is clean and flat with small hover details and a light/dark theme. Colours come from the BSRF logo (ultramarine, the green swoosh and deep navy), and the single typeface is Schibsted Grotesk, self-hosted at build time.
+Built with [Astro](https://astro.build) as a fully static site, with [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for smooth scrolling and light motion, and hosted for free on [Cloudflare Workers](https://developers.cloudflare.com/workers/static-assets/). The design system follows the “Golf Club & Training Website” landing page by Naim Siam on Dribbble: white pages, near-black ink, a lime accent for actions, pale lime-cream bands, olive numbers and checks, pill buttons, 16px photo cards and a black footer, set in Inter (self-hosted at build time). A light/dark switch is included.
 
 ## Editing content
 
@@ -62,14 +62,14 @@ To deploy automatically on every push to `main`, connect this repository in the 
 ```
 src/
   assets/       logo mark, cover banner and photos (optimized at build time)
-  components/   Header, Hero, About, ResearchAreas, Latest, Gallery, People, Join, Footer,
-                PageHeader, Lightbox, Icon
+  components/   Header, Hero, About, Programs, Banner, Join, ResearchAreas, People, Contact,
+                Latest, EventCard, Footer, PageHeader, Lightbox, Icon
   content/      events as Markdown
   data/         site.ts (content) and photos.ts (home gallery picks)
   layouts/      Base.astro: page shell, SEO tags, fonts
   pages/        home, events list, event pages, publications, 404
   scripts/      motion.ts: smooth scroll and scroll reveals
-  styles/       global.css: light/dark colour tokens, type, cards, pill buttons, tabs, reveals
+  styles/       global.css: light/dark colour tokens, type, pill buttons, cards, chips, reveals
   utils/        date formatting and upcoming/past event helpers
 ```
 
