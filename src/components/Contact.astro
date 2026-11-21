@@ -1,0 +1,146 @@
+---
+import { Image } from 'astro:assets';
+import { site } from '../data/site';
+import { getLaunchPhotos } from '../data/photos';
+
+const photos = await getLaunchPhotos();
+const photo = photos[17]; // a student receiving a badge from the faculty panel
+---
+
+<section class="container section contact" id="contact" aria-labelledby="contact-title">
+  <div class="photo reveal">
+    <Image src={photo.src} alt={photo.alt} widths={[480, 720, 960]} sizes="(min-width: 900px) 540px, 92vw" />
+  </div>
+
+  <div class="panel reveal">
+    <h2 id="contact-title">Get in touch</h2>
+    {
+      site.email ? (
+        <form class="form" action={`mailto:${site.email}`} method="post" enctype="text/plain" data-contact={site.email}>
+          <label>
+            <span class="visually-hidden">Your name</span>
+            <input name="name" type="text" placeholder="Your name" autocomplete="name" required />
+          </label>
+          <label>
+            <span class="visually-hidden">Your email</span>
+            <input name="email" type="email" placeholder="Your email" autocomplete="email" required />
+          </label>
+          <label>
+            <span class="visually-hidden">Message</span>
+            <textarea name="message" rows="5" placeholder="Your message" required></textarea>
+          </label>
+          <button class="btn btn-lime send" type="submit">
+            Send message
+          </button>
+          <p class="note">This opens your email app with the message ready to send.</p>
+        </form>
+      ) : (
+        <div class="fallback">
+          <p>The quickest way to reach the forum is a message on Facebook.</p>
+          <a class="btn btn-lime" href={site.facebook} target="_blank" rel="noopener">
+            Message us on Facebook
+          </a>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 900px) {
+    .contact {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .photo {
+    min-height: 20rem;
+  }
+
+  .photo :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .panel {
+    display: grid;
+    align-content: start;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    border-radius: var(--r);
+    background: var(--soft);
+  }
+
+  h2 {
+    font-size: clamp(1.9rem, 1.5rem + 1.2vw, 2.4rem);
+  }
+
+  .form {
+    display: grid;
+    gap: 1.1rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 0.7rem 0;
+    border: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--ink) 35%, transparent);
+    background: transparent;
+    color: var(--ink);
+    font-size: 0.95rem;
+    resize: vertical;
+    transition: border-color 220ms var(--ease);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--muted);
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-bottom-color: var(--ink);
+    box-shadow: 0 1px 0 0 var(--ink);
+  }
+
+  .send {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
+  .note {
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .fallback {
+    display: grid;
+    justify-items: start;
+    gap: 1rem;
+  }
+</style>
+
+<script>
+  // Compose a tidy email instead of the raw form post the browser would send.
+  const form = document.querySelector<HTMLFormElement>('[data-contact]');
+  form?.addEventListener('submit', (e) => {
+    if (!form.reportValidity()) return;
+    e.preventDefault();
+    const data = new FormData(form);
+    const name = String(data.get('name') ?? '').trim();
+    const email = String(data.get('email') ?? '').trim();
+    const message = String(data.get('message') ?? '').trim();
+    const subject = `Message from ${name} via the BSRF website`;
+    const body = `${message}\n\n${name}\n${email}`;
+    window.location.href = `mailto:${form.dataset.contact}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  });
+</script>
